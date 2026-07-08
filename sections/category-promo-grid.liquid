@@ -1,31 +1,47 @@
 {% comment %}
-  Category promo grid, styled after the source site's pastel category
-  tiles (Kadın Terlik, Kadın Sandalet, …): square tiles with the product
-  image over a soft gradient and a centered label near the bottom.
+  Category promo grid, matching the source site's tiles: rounded-corner
+  banner images (gradient background and label are baked into the
+  artwork) in a 2- or 3-column layout; single column on mobile.
 
-  Each tile is a block pointing at a collection; the image falls back to
-  a custom image, the collection image, then the first product's image.
+  Each tile is a block. Image priority: uploaded image > external image
+  URL (used to mirror the source's Ticimax banners during development)
+  > collection image > first product image. The overlay label renders
+  only when set — the source banners carry their own label.
 {% endcomment %}
 
-<div class="promo-grid">
+<div class="promo-grid promo-grid--cols-{{ section.settings.columns }}">
   {%- for block in section.blocks -%}
     {%- liquid
       assign tile_collection = block.settings.collection
-      assign tile_image = block.settings.image | default: tile_collection.featured_image | default: tile_collection.products.first.featured_image
-      assign tile_label = block.settings.label | default: tile_collection.title
-      assign tile_url = block.settings.link | default: tile_collection.url
+      assign tile_image = block.settings.image | default: tile_collection.featured_image
+      assign tile_label = block.settings.label
+      assign tile_url = block.settings.link | default: tile_collection.url | default: routes.all_products_collection_url
+      assign tile_alt = tile_label | default: tile_collection.title
     -%}
-    <a class="promo-tile" href="{{ tile_url | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>
-      {%- if tile_image -%}
+    <a class="promo-tile" href="{{ tile_url }}" {{ block.shopify_attributes }}>
+      {%- if block.settings.image -%}
         {{
-          tile_image
-          | image_url: width: 800
+          block.settings.image
+          | image_url: width: 1200
           | image_tag:
-            widths: '400, 600, 800',
-            sizes: '(min-width: 750px) 33vw, 50vw',
+            widths: '600, 900, 1200',
+            sizes: '(min-width: 750px) 50vw, 100vw',
             class: 'promo-tile__image',
             loading: 'lazy',
-            alt: tile_label
+            alt: tile_alt
+        }}
+      {%- elsif block.settings.image_url != blank -%}
+        <img class="promo-tile__image" src="{{ block.settings.image_url }}" loading="lazy" alt="{{ tile_alt | escape }}" width="800" height="800">
+      {%- elsif tile_image -%}
+        {{
+          tile_image
+          | image_url: width: 1200
+          | image_tag:
+            widths: '600, 900, 1200',
+            sizes: '(min-width: 750px) 50vw, 100vw',
+            class: 'promo-tile__image',
+            loading: 'lazy',
+            alt: tile_alt
         }}
       {%- endif -%}
       {%- if tile_label != blank -%}
@@ -38,58 +54,72 @@
 {% stylesheet %}
   .promo-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: var(--space-sm);
-    margin-block: var(--space-lg);
+    margin-block: var(--space-sm);
   }
 
   @media (min-width: 750px) {
     .promo-grid {
-      grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
       gap: var(--space-lg);
+      margin-block: var(--space-lg) 0;
+    }
+
+    .promo-grid--cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .promo-grid--cols-3 {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
   .promo-tile {
     position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    aspect-ratio: 1 / 1;
+    display: block;
     overflow: hidden;
-    border-radius: var(--card-radius);
+    border-radius: 1.2rem;
     background: linear-gradient(160deg, #fdf3e3 0%, #fbe0cd 60%, #f7cdb6 100%);
   }
 
   .promo-tile__image {
-    position: absolute;
-    inset: 0;
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     transition: transform var(--transition-base);
   }
 
   .promo-tile:hover .promo-tile__image {
-    transform: scale(1.03);
+    transform: scale(1.02);
   }
 
   .promo-tile__label {
-    position: relative;
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
     z-index: 2;
-    width: 100%;
     padding: var(--space-sm);
-    background: linear-gradient(transparent, rgb(0 0 0 / 25%));
-    color: #ffffff;
-    font-size: var(--font-size-md);
+    color: var(--color-foreground);
+    font-size: var(--font-size-lg);
     text-align: center;
-    text-shadow: 0 1px 4px rgb(0 0 0 / 35%);
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:general.category_grid",
+  "settings": [
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "t:labels.columns",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "3"
+    }
+  ],
   "blocks": [
     {
       "type": "tile",
@@ -104,6 +134,12 @@
           "type": "image_picker",
           "id": "image",
           "label": "t:labels.image"
+        },
+        {
+          "type": "text",
+          "id": "image_url",
+          "label": "t:labels.image_url",
+          "info": "t:info.image_url"
         },
         {
           "type": "text",
@@ -122,7 +158,6 @@
     {
       "name": "t:general.category_grid",
       "blocks": [
-        { "type": "tile" },
         { "type": "tile" },
         { "type": "tile" },
         { "type": "tile" }

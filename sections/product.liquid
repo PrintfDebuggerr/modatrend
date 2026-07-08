@@ -1,12 +1,18 @@
 {% comment %}
-  Modatrend product page (PDP).
+  Modatrend product page (PDP), matched to the source (Ticimax) layout.
 
-  Two-column layout on desktop: media gallery (thumbnail switcher, product
-  code overlay) on the left; buy box on the right — title + SKU, price box
-  with discount badge and extra-discount bar, linked color siblings
+  Top bar: multi-level breadcrumb (collections sorted broad → narrow) with a
+  "back to previous page" link on the right.
+
+  Two-column layout on desktop: media gallery (thumbnail switcher, round
+  product-code overlay) on the left; buy column on the right — a surface
+  card holding title + SKU, struck-through compare price, percent-discount
+  badge next to the sale price, an optional installment line and the
+  extra-discount pill; then payment-options link, linked color siblings
   ("Renkler", from the `custom.color_group` product-list metafield), size
-  chart link, square size selector, quantity stepper, add to cart,
-  favorite toggle, and accordions (description + custom blocks).
+  chart link, square size selector with a diagonal strike on sold-out
+  sizes, quantity stepper, add to cart, favorite toggle, and a boxed
+  accordion group (description + custom blocks).
 
   On mobile the gallery becomes a horizontal scroll-snap carousel.
 {% endcomment %}
@@ -16,16 +22,48 @@
   assign sku = current_variant.sku
   assign crumb_collection = collection | default: product.collections.first
   assign color_group = product.metafields.custom.color_group.value
+  assign model_code = product.metafields.custom.model_code | default: sku
+
+  assign price = current_variant.price | default: product.price
+  assign compare_at = current_variant.compare_at_price | default: product.compare_at_price
+  assign on_sale = false
+  if compare_at > price
+    assign on_sale = true
+    assign discount_percent = compare_at | minus: price | times: 100 | divided_by: compare_at
+  endif
+
+  assign extra_percent = settings.extra_discount_percent | default: 0
+  if extra_percent > 0
+    assign extra_multiplier = 100 | minus: extra_percent
+    assign extra_price = price | times: extra_multiplier | divided_by: 100 | money
+  endif
+
+  assign installment_count = section.settings.installment_count | default: 0
+  if installment_count > 1
+    assign installment_amount = price | divided_by: installment_count | money
+  endif
 -%}
 
-<nav class="breadcrumb" aria-label="breadcrumb">
-  <a href="{{ routes.root_url }}">{{ 'general.breadcrumb_home' | t }}</a>
-  {%- if crumb_collection -%}
-    <span aria-hidden="true">›</span>
-    <a href="{{ crumb_collection.url }}">{{ crumb_collection.title }}</a>
-  {%- endif -%}
-  <span aria-hidden="true">›</span>
-  <span aria-current="page">{{ product.title }}</span>
+<nav class="pdp-breadcrumb" aria-label="breadcrumb">
+  <div class="pdp-breadcrumb__trail">
+    <a href="{{ routes.root_url }}">{{ 'general.breadcrumb_home' | t }}</a>
+    {%- assign crumb_collections = product.collections | sort: 'products_count' | reverse -%}
+    {%- for crumb in crumb_collections limit: 3 -%}
+      {%- unless crumb.handle == 'frontpage' or crumb.handle == 'all' -%}
+        <span aria-hidden="true">&gt;</span>
+        <a href="{{ crumb.url }}">{{ crumb.title }}</a>
+      {%- endunless -%}
+    {%- endfor -%}
+    <span aria-hidden="true">&gt;</span>
+    <span aria-current="page">{{ product.title }}</span>
+  </div>
+  <a
+    class="pdp-breadcrumb__back"
+    href="{{ crumb_collection.url | default: routes.root_url }}"
+    data-back-link
+  >
+    ‹ {{ 'products.product.back_to_previous' | t }}
+  </a>
 </nav>
 
 <div class="pdp">
@@ -45,10 +83,10 @@
         >
           {{
             media.preview_image
-            | image_url: width: 1200
+            | image_url: width: 1100
             | image_tag:
-              widths: '400, 600, 900, 1200',
-              sizes: '(min-width: 750px) 55vw, 100vw',
+              widths: '400, 600, 900, 1100',
+              sizes: '(min-width: 750px) 44vw, 100vw',
               class: 'pdp__image',
               loading: img_loading
           }}
@@ -59,8 +97,11 @@
         </div>
       {%- endfor -%}
 
-      {%- if sku != blank -%}
-        <span class="pdp__code">{{ 'products.card.product_code' | t }} {{ sku }}</span>
+      {%- if model_code != blank -%}
+        <span class="pdp__code">
+          <span>{{ 'products.card.product_code' | t }}</span>
+          <strong>{{ model_code }}</strong>
+        </span>
       {%- endif -%}
     </div>
 
@@ -73,7 +114,7 @@
             data-gallery-thumb="{{ forloop.index0 }}"
             aria-label="{{ 'products.product.view_image' | t: index: forloop.index }}"
           >
-            {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy' }}
+            {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy' }}
           </button>
         {%- endfor -%}
       </div>
@@ -81,14 +122,52 @@
   </div>
 
   <div class="pdp__info">
-    <h1 class="pdp__title">{{ product.title }}</h1>
-    {%- if sku != blank -%}
-      <p class="pdp__sku">{{ 'products.product.sku_label' | t }} {{ sku }}</p>
-    {%- endif -%}
+    <div class="pdp__card">
+      <h1 class="pdp__title">{{ product.title }}</h1>
+      {%- if sku != blank -%}
+        <p class="pdp__sku">{{ 'products.product.sku_label' | t }} ({{ sku }})</p>
+      {%- endif -%}
 
-    <div class="pdp__price-box">
-      {% render 'price', product: product %}
+      <div class="pdp__price{% if on_sale %} pdp__price--on-sale{% endif %}">
+        {%- if on_sale -%}
+          <s class="pdp__price-compare">
+            <span class="visually-hidden">{{ 'products.price.regular_price' | t }}</span>
+            {{ compare_at | money }}
+          </s>
+        {%- endif -%}
+
+        <div class="pdp__price-row">
+          {%- if on_sale -%}
+            <span class="pdp__price-badge" aria-hidden="true">
+              <strong>{{ 'products.price.badge_percent' | t: percent: discount_percent }}</strong>
+              <span>{{ 'products.price.discount_label' | t }}</span>
+            </span>
+          {%- endif -%}
+          <span class="pdp__price-current">
+            <span class="visually-hidden">{{ 'products.price.sale_price' | t }}</span>
+            {{ price | money }}
+          </span>
+        </div>
+
+        {%- if installment_count > 1 -%}
+          <p class="pdp__installments">
+            {{ 'products.product.installments_from_html' | t: amount: installment_amount }}
+          </p>
+        {%- endif -%}
+
+        {%- if extra_percent > 0 -%}
+          <p class="pdp__extra">
+            {{ 'products.price.extra_discount_html' | t: percent: extra_percent, price: extra_price }}
+          </p>
+        {%- endif -%}
+      </div>
     </div>
+
+    {%- if section.settings.payment_options_page != blank -%}
+      <a class="pdp__side-link" href="{{ section.settings.payment_options_page.url }}">
+        {{- 'products.product.payment_options' | t -}}
+      </a>
+    {%- endif -%}
 
     {%- if color_group -%}
       <div class="pdp__colors">
@@ -113,15 +192,13 @@
       {%- if product.has_only_default_variant -%}
         <input type="hidden" name="id" value="{{ current_variant.id }}">
       {%- elsif product.options.size == 1 -%}
+        {%- if section.settings.size_chart_page != blank -%}
+          <a class="pdp__side-link pdp__side-link--divided" href="{{ section.settings.size_chart_page.url }}">
+            {{- 'products.product.size_chart' | t -}}
+          </a>
+        {%- endif -%}
         <fieldset class="pdp__sizes">
-          <legend class="pdp__label">
-            {{ product.options_with_values.first.name }}
-            {%- if section.settings.size_chart_page != blank -%}
-              <a class="pdp__size-chart" href="{{ section.settings.size_chart_page.url }}">
-                {{- 'products.product.size_chart' | t -}}
-              </a>
-            {%- endif -%}
-          </legend>
+          <legend class="pdp__label">{{ product.options_with_values.first.name }}</legend>
           <div class="pdp__size-grid">
             {%- for variant in product.variants -%}
               <label class="pdp__size{% unless variant.available %} pdp__size--disabled{% endunless %}">
@@ -195,7 +272,7 @@
       {{ 'products.card.add_to_favorites' | t }}
     </button>
 
-    <div class="pdp__accordions">
+    <div class="pdp__details">
       {%- if product.description != blank -%}
         <details class="pdp__accordion" open>
           <summary>{{ 'products.product.description_title' | t }}</summary>
@@ -218,6 +295,53 @@
 {% render 'favorites-toggle' %}
 
 {% stylesheet %}
+  /* ---- Breadcrumb bar ---- */
+  .pdp-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-block: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+  }
+
+  .pdp-breadcrumb__trail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-xs);
+    min-width: 0;
+  }
+
+  .pdp-breadcrumb__trail a {
+    color: var(--color-muted);
+  }
+
+  .pdp-breadcrumb__trail a:hover {
+    color: var(--color-foreground);
+  }
+
+  .pdp-breadcrumb__trail [aria-current='page'] {
+    color: var(--color-foreground);
+  }
+
+  .pdp-breadcrumb__back {
+    flex-shrink: 0;
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+  }
+
+  .pdp-breadcrumb__back:hover {
+    color: var(--color-foreground);
+  }
+
+  @media (max-width: 749px) {
+    .pdp-breadcrumb__back {
+      display: none;
+    }
+  }
+
   .pdp {
     display: grid;
     grid-template-columns: 1fr;
@@ -227,8 +351,9 @@
 
   @media (min-width: 750px) {
     .pdp {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: var(--space-2xl);
+      grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+      gap: var(--space-xl);
+      align-items: start;
     }
   }
 
@@ -253,13 +378,21 @@
 
   .pdp__code {
     position: absolute;
-    top: var(--space-sm);
-    right: var(--space-sm);
+    top: 38%;
+    right: var(--space-xs);
     z-index: 2;
-    padding: var(--space-2xs) var(--space-xs);
-    background-color: color-mix(in srgb, var(--color-muted) 80%, transparent);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 6.4rem;
+    height: 6.4rem;
+    border-radius: 50%;
+    background-color: color-mix(in srgb, var(--color-muted) 82%, transparent);
     color: var(--color-accent-contrast);
     font-size: var(--font-size-xs);
+    line-height: 1.25;
+    text-align: center;
   }
 
   @media (max-width: 749px) {
@@ -286,22 +419,21 @@
   }
 
   .pdp__thumbs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-    margin-top: var(--space-xs);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
   }
 
   .pdp__thumb {
-    width: 7.2rem;
     padding: 0;
-    border: 1px solid var(--color-border);
-    background: none;
+    border: 1px solid transparent;
+    background-color: var(--color-surface);
     cursor: pointer;
   }
 
   .pdp__thumb.is-active {
-    border-color: var(--color-accent);
+    border-color: var(--color-muted);
   }
 
   .pdp__thumb img {
@@ -317,23 +449,115 @@
     gap: var(--space-md);
   }
 
+  .pdp__card {
+    padding: var(--space-lg);
+    background-color: var(--color-surface);
+  }
+
   .pdp__title {
-    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-xs);
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-medium);
   }
 
   .pdp__sku {
+    margin-bottom: var(--space-md);
     font-size: var(--font-size-xs);
     color: var(--color-muted);
   }
 
-  .pdp__price-box {
-    padding: var(--space-md);
-    background-color: var(--color-surface);
+  /* ---- Price block ---- */
+  .pdp__price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2xs);
   }
 
-  .pdp__price-box .price__main {
-    justify-content: flex-start;
+  .pdp__price-compare {
+    font-size: var(--font-size-md);
+    color: var(--color-muted);
+  }
+
+  .pdp__price-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .pdp__price-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--style-border-radius-inputs);
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+    line-height: 1.1;
+  }
+
+  .pdp__price-badge > strong {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .pdp__price-badge > span {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+  }
+
+  .pdp__price-current {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .pdp__price--on-sale .pdp__price-current {
+    color: var(--color-accent);
+  }
+
+  .pdp__installments {
+    margin-top: var(--space-xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+  }
+
+  .pdp__installments strong {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-foreground);
+  }
+
+  .pdp__extra {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    margin-top: var(--space-xs);
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--style-border-radius-inputs);
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+    font-size: var(--font-size-sm);
+  }
+
+  .pdp__extra strong {
+    font-size: var(--font-size-md);
+  }
+
+  /* ---- Side links (payment options, size chart) ---- */
+  .pdp__side-link {
+    align-self: flex-end;
+    font-size: var(--font-size-xs);
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .pdp__side-link--divided {
+    width: 100%;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+    text-align: right;
   }
 
   .pdp__label {
@@ -347,6 +571,11 @@
   }
 
   /* ---- Colors ---- */
+  .pdp__colors {
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+
   .pdp__color-list {
     display: flex;
     flex-wrap: wrap;
@@ -360,6 +589,7 @@
     display: block;
     width: 6rem;
     border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
   }
 
   .pdp__color.is-current {
@@ -384,13 +614,6 @@
     padding: 0;
   }
 
-  .pdp__size-chart {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-normal);
-    color: var(--color-foreground);
-    text-decoration: underline;
-  }
-
   .pdp__size-grid {
     display: flex;
     flex-wrap: wrap;
@@ -402,8 +625,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 4.8rem;
-    height: 4.8rem;
+    min-width: 4.4rem;
+    height: 4.4rem;
     padding: 0 var(--space-xs);
     border: 1px solid var(--color-border);
     background-color: var(--color-background);
@@ -433,8 +656,19 @@
 
   .pdp__size--disabled {
     color: var(--color-muted);
-    text-decoration: line-through;
     cursor: not-allowed;
+  }
+
+  .pdp__size--disabled::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top right,
+      transparent calc(50% - 0.5px),
+      var(--color-muted),
+      transparent calc(50% + 0.5px)
+    );
   }
 
   .pdp__variant-select {
@@ -455,6 +689,7 @@
     display: inline-flex;
     align-items: stretch;
     border: 1px solid var(--color-border);
+    background-color: var(--color-background);
   }
 
   .pdp__qty button {
@@ -482,6 +717,7 @@
 
   .pdp__submit {
     flex: 1;
+    letter-spacing: 0.06em;
   }
 
   .pdp__favorite {
@@ -505,14 +741,15 @@
     fill: var(--color-accent);
   }
 
-  /* ---- Accordions ---- */
-  .pdp__accordions {
-    margin-top: var(--space-md);
-    border-top: 1px solid var(--color-border);
+  /* ---- Details box (accordions) ---- */
+  .pdp__details {
+    margin-top: var(--space-xs);
+    padding: 0 var(--space-md);
+    border: 1px solid var(--color-border);
   }
 
-  .pdp__accordion {
-    border-bottom: 1px solid var(--color-border);
+  .pdp__accordion + .pdp__accordion {
+    border-top: 1px solid var(--color-border);
   }
 
   .pdp__accordion summary {
@@ -535,6 +772,7 @@
   .pdp__accordion summary::after {
     content: '+';
     font-size: var(--font-size-md);
+    color: var(--color-muted);
   }
 
   .pdp__accordion[open] summary::after {
@@ -571,6 +809,15 @@
         input.value = Math.max(1, next);
       });
     });
+
+    document.querySelectorAll('[data-back-link]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (window.history.length > 1) {
+          event.preventDefault();
+          window.history.back();
+        }
+      });
+    });
   })();
 {% endjavascript %}
 
@@ -582,6 +829,22 @@
       "type": "page",
       "id": "size_chart_page",
       "label": "t:labels.size_chart_page"
+    },
+    {
+      "type": "page",
+      "id": "payment_options_page",
+      "label": "Ödeme seçenekleri sayfası",
+      "info": "Seçilirse fiyat kutusunun altında \"Ödeme Seçenekleri\" bağlantısı gösterilir."
+    },
+    {
+      "type": "range",
+      "id": "installment_count",
+      "min": 0,
+      "max": 12,
+      "step": 1,
+      "label": "Taksit sayısı (görsel)",
+      "info": "0 = gizli. Fiyat, taksit sayısına bölünerek \"'den başlayan taksitlerle\" satırı gösterilir; ödeme sağlayıcı oranlarını içermez.",
+      "default": 9
     }
   ],
   "blocks": [

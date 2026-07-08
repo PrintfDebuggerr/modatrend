@@ -56,6 +56,7 @@
     "border": "Borders",
     "caption": "Caption",
     "collection": "Collection",
+    "columns": "Columns",
     "cta_label": "Button label",
     "eyebrow": "Eyebrow text",
     "extra_discount_percent": "Extra discount percent",
@@ -63,6 +64,7 @@
     "foreground": "Foreground",
     "heading": "Heading",
     "image": "Image",
+    "image_url": "External image URL",
     "link": "Link",
     "logo": "Logo image",
     "logo_accent": "Logo accent text",
@@ -92,6 +94,7 @@
   },
   "info": {
     "extra_discount_percent": "Display only. Create a matching automatic discount in the Shopify admin so the price applies at checkout. Set to 0 to hide.",
+    "image_url": "Temporary: hotlinks an external image. Prefer uploading via the image picker for production.",
     "logo_accent": "The part of the shop name to highlight in the accent color when no logo image is set.",
     "whatsapp_number": "International format, digits only. Example: 905538361665"
   },

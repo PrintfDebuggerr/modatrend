@@ -79,7 +79,10 @@
       "sale_price": "İndirimli fiyat"
     },
     "product": {
-      "sku_label": "Stok Kodu:",
+      "sku_label": "Stok Kodu :",
+      "back_to_previous": "Önceki Sayfaya Dön",
+      "payment_options": "Ödeme Seçenekleri",
+      "installments_from_html": "<strong>{{ amount }}</strong>'den başlayan taksitlerle",
       "colors": "Renkler",
       "size_chart": "Ölçü Tablosu",
       "select_variant": "Seçenek belirleyin",

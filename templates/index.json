@@ -36,26 +36,86 @@
         "autoplay": true
       }
     },
-    "categories": {
+    "categories-large": {
       "type": "category-promo-grid",
       "blocks": {
-        "tile-1": {
+        "tile-terlik": {
           "type": "tile",
           "settings": {
             "collection": "bayan-terlik",
-            "label": "Kadın Terlik"
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/kadin-terlik-modelleri-ve-fiyatlari-a132.jpg"
           }
         },
-        "tile-2": {
+        "tile-sandalet": {
           "type": "tile",
           "settings": {
-            "collection": "bayan-topuklu-ayakkabi",
-            "label": "Kadın Topuklu"
+            "collection": "bayan-sandalet",
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/kadin-sandalet-modelleri-ve-fiyatlari-fb9b.jpg"
           }
         }
       },
-      "block_order": ["tile-1", "tile-2"],
-      "settings": {}
+      "block_order": ["tile-terlik", "tile-sandalet"],
+      "settings": {
+        "columns": "2"
+      }
+    },
+    "categories-small": {
+      "type": "category-promo-grid",
+      "blocks": {
+        "tile-kadin-spor": {
+          "type": "tile",
+          "settings": {
+            "collection": "bayan-spor-ayakkabi",
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/kadin-spor-ayakkabi-modelleri-ve-fiyatla-5d3f.jpg"
+          }
+        },
+        "tile-gunluk": {
+          "type": "tile",
+          "settings": {
+            "collection": "bayan-gunluk-ayakkabi",
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/kadin-gunluk-ayakkabi-modelleri-df09.jpg"
+          }
+        },
+        "tile-topuklu": {
+          "type": "tile",
+          "settings": {
+            "collection": "bayan-topuklu-ayakkabi",
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/kadin-topuklu-ayakkabi-modelleri-ve-fiya-c75f.jpg"
+          }
+        },
+        "tile-erkek-spor": {
+          "type": "tile",
+          "settings": {
+            "collection": "erkek-spor-ayakkabi-modelleri",
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/erkek-spor-ayakkabi-modelleri-ve-fiyatla-4f26.jpg"
+          }
+        },
+        "tile-erkek-terlik": {
+          "type": "tile",
+          "settings": {
+            "collection": "erkek-terlik-sandalet-modelleri",
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/erkek-terlik-modelleri-ve-fiyatlari-deac.jpg"
+          }
+        },
+        "tile-cocuk": {
+          "type": "tile",
+          "settings": {
+            "collection": "cocuk-ayakkabi-modelleri",
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/cocuk-ayakkabi-modelleri-ve-fiyatlari-76e5.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "tile-kadin-spor",
+        "tile-gunluk",
+        "tile-topuklu",
+        "tile-erkek-spor",
+        "tile-erkek-terlik",
+        "tile-cocuk"
+      ],
+      "settings": {
+        "columns": "3"
+      }
     },
     "featured-terlik": {
       "type": "featured-collection",
@@ -77,7 +137,8 @@
   },
   "order": [
     "hero",
-    "categories",
+    "categories-large",
+    "categories-small",
     "featured-terlik",
     "featured-topuklu"
   ]

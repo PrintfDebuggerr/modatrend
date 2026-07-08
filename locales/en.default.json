@@ -80,6 +80,9 @@
     },
     "product": {
       "sku_label": "SKU:",
+      "back_to_previous": "Back to previous page",
+      "payment_options": "Payment options",
+      "installments_from_html": "Installments starting from <strong>{{ amount }}</strong>",
       "colors": "Colors",
       "size_chart": "Size chart",
       "select_variant": "Select an option",
