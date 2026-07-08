@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Skeleton",
+    "theme_name": "Modatrend",
     "theme_version": "0.1.0",
-    "theme_author": "Shopify",
+    "theme_author": "Modatrend",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
   },
@@ -17,7 +17,7 @@
       {
         "type": "font_picker",
         "id": "type_primary_font",
-        "default": "work_sans_n4",
+        "default": "quicksand_n4",
         "label": "t:general.primary"
       }
     ]
@@ -31,6 +31,10 @@
         "label": "t:labels.page_width",
         "options": [
           {
+            "value": "78rem",
+            "label": "t:options.page_width.standard"
+          },
+          {
             "value": "90rem",
             "label": "t:options.page_width.narrow"
           },
@@ -39,7 +43,7 @@
             "label": "t:options.page_width.wide"
           }
         ],
-        "default": "90rem"
+        "default": "78rem"
       },
       {
         "type": "range",
@@ -49,7 +53,7 @@
         "step": 1,
         "unit": "px",
         "label": "t:labels.page_margin",
-        "default": 20
+        "default": 16
       }
     ]
   },
@@ -65,8 +69,38 @@
       {
         "type": "color",
         "id": "foreground_color",
-        "default": "#333333",
+        "default": "#111111",
         "label": "t:labels.foreground"
+      },
+      {
+        "type": "color",
+        "id": "accent_color",
+        "default": "#E1137D",
+        "label": "t:labels.accent"
+      },
+      {
+        "type": "color",
+        "id": "muted_color",
+        "default": "#959595",
+        "label": "t:labels.muted"
+      },
+      {
+        "type": "color",
+        "id": "border_color",
+        "default": "#E1E1E1",
+        "label": "t:labels.border"
+      },
+      {
+        "type": "color",
+        "id": "surface_color",
+        "default": "#F5F5F5",
+        "label": "t:labels.surface"
+      },
+      {
+        "type": "color",
+        "id": "shipping_badge_color",
+        "default": "#3DBE29",
+        "label": "t:labels.shipping_badge"
       },
       {
         "type": "range",
@@ -76,7 +110,7 @@
         "step": 1,
         "unit": "px",
         "label": "t:labels.input_corner_radius",
-        "default": 4
+        "default": 0
       }
     ]
   }

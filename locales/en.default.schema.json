@@ -34,9 +34,14 @@
     "typography": "Typography"
   },
   "labels": {
+    "accent": "Accent",
     "alignment": "Alignment",
     "background": "Background",
+    "border": "Borders",
     "foreground": "Foreground",
+    "muted": "Muted text",
+    "shipping_badge": "Shipping badge",
+    "surface": "Surface",
     "grid_gap": "Grid spacing",
     "grid_item_width": "Grid item width",
     "input_corner_radius": "Input corner radius",
@@ -61,6 +66,7 @@
       "vertical": "Vertical"
     },
     "page_width": {
+      "standard": "Standard",
       "narrow": "Narrow",
       "wide": "Wide"
     },
