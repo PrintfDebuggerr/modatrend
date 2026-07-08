@@ -110,7 +110,8 @@
       "menu": "Menü",
       "open_menu": "Menüyü aç",
       "whatsapp_line": "Whatsapp Sipariş Hattı {{ phone }}",
-      "favorites": "Favorilerim"
+      "favorites": "Favorilerim",
+      "account": "Üye Girişi / Üye Ol"
     },
     "footer": {
       "secure_shopping": "İnternette Güvenli Alışveriş",

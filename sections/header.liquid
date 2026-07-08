@@ -51,14 +51,6 @@
           </a>
         {%- endif -%}
 
-        {%- if section.settings.favorites_url != blank -%}
-          <a class="header__favorites" href="{{ section.settings.favorites_url }}">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"></path>
-            </svg>
-            {{ 'sections.header.favorites' | t }}
-          </a>
-        {%- endif -%}
       </div>
     </div>
   </div>
@@ -147,17 +139,30 @@
     </form>
 
     <div class="header__icons">
-      {%- if shop.customer_accounts_enabled -%}
-        <shopify-account menu="{{ section.settings.customer_account_menu }}">
-          {{ 'icon-account.svg' | inline_asset_content }}
-        </shopify-account>
+      {%- if section.settings.favorites_url != blank -%}
+        <a class="header__icon-link header__icon-link--favorites" href="{{ section.settings.favorites_url }}">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false">
+            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"></path>
+          </svg>
+          <span class="header__icon-label">{{ 'sections.header.favorites' | t }}</span>
+        </a>
       {%- endif -%}
 
-      <a class="header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'cart.title' | t }}" data-cart-open>
-        {{ 'icon-cart.svg' | inline_asset_content }}
-        {%- if cart.item_count > 0 -%}
-          <span class="header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>
-        {%- endif -%}
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="header__icon-link" href="{{ routes.account_url }}">
+          {{ 'icon-account.svg' | inline_asset_content }}
+          <span class="header__icon-label">{{ 'sections.header.account' | t }}</span>
+        </a>
+      {%- endif -%}
+
+      <a class="header__cart header__icon-link" href="{{ routes.cart_url }}" aria-label="{{ 'cart.title' | t }}" data-cart-open>
+        <span class="header__cart-icon">
+          {{ 'icon-cart.svg' | inline_asset_content }}
+          {%- if cart.item_count > 0 -%}
+            <span class="header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>
+          {%- endif -%}
+        </span>
+        <span class="header__icon-label">{{ 'cart.title' | t }}</span>
       </a>
     </div>
   </div>
@@ -220,17 +225,13 @@
     display: flex;
     align-items: center;
     gap: var(--space-lg);
+    margin-left: auto;
   }
 
-  .header__whatsapp,
-  .header__favorites {
+  .header__whatsapp {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2xs);
-  }
-
-  .header__favorites {
-    text-transform: uppercase;
   }
 
   /* ---- Main bar ---- */
@@ -284,7 +285,7 @@
     justify-self: end;
     display: flex;
     align-items: center;
-    gap: var(--space-md);
+    gap: var(--space-lg);
   }
 
   .header__icons svg {
@@ -292,15 +293,39 @@
     height: auto;
   }
 
-  .header__cart {
+  .header__icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .header__icon-label {
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 749px) {
+    .header__icon-label,
+    .header__icon-link--favorites {
+      display: none;
+    }
+
+    .header__icons {
+      gap: var(--space-md);
+    }
+  }
+
+  .header__cart-icon {
     position: relative;
     display: inline-flex;
   }
 
   .header__cart-count {
     position: absolute;
-    top: -0.6rem;
-    right: -0.8rem;
+    bottom: -0.5rem;
+    right: -0.5rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -481,7 +506,7 @@
 
     .header__main {
       grid-template-columns: auto 1fr auto;
-      min-height: 7.2rem;
+      min-height: 8.8rem;
     }
 
     .header__logo {
@@ -581,12 +606,6 @@
       "type": "link_list",
       "id": "utility_menu",
       "label": "t:labels.utility_menu"
-    },
-    {
-      "type": "link_list",
-      "id": "customer_account_menu",
-      "label": "t:labels.customer_account_menu",
-      "default": "customer-account-main-menu"
     },
     {
       "type": "url",

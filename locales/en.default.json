@@ -110,7 +110,8 @@
       "menu": "Menu",
       "open_menu": "Open menu",
       "whatsapp_line": "WhatsApp order line {{ phone }}",
-      "favorites": "Favorites"
+      "favorites": "Favorites",
+      "account": "Sign in / Sign up"
     },
     "footer": {
       "secure_shopping": "Secure online shopping",

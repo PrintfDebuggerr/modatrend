@@ -306,13 +306,14 @@
     const updateBubble = (count) => {
       const cartLink = document.querySelector('[data-cart-open]');
       if (!cartLink) return;
-      let bubble = cartLink.querySelector('.header__cart-count');
+      const host = cartLink.querySelector('.header__cart-icon') || cartLink;
+      let bubble = host.querySelector('.header__cart-count');
       if (parseInt(count, 10) > 0) {
         if (!bubble) {
           bubble = document.createElement('span');
           bubble.className = 'header__cart-count';
           bubble.setAttribute('aria-hidden', 'true');
-          cartLink.appendChild(bubble);
+          host.appendChild(bubble);
         }
         bubble.textContent = count;
       } else {
