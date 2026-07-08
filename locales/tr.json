@@ -37,6 +37,13 @@
     "expires_on": "Son kullanma tarihi: {{ expires_on }}",
     "use_at_checkout": "Bu hediye kartını ödeme adımında kullanın"
   },
+  "newsletter": {
+    "title": "E-bülten Üyelik",
+    "subtext": "Güncel yeniliklerimizden ve kampanyalarımızdan haber almak için kayıt olun!",
+    "placeholder": "E-posta adresinizi yazın...",
+    "submit": "Gönder",
+    "success": "Kaydınız alındı, teşekkürler!"
+  },
   "password": {
     "title": "Bu mağaza özeldir",
     "password": "Şifre",
@@ -64,6 +71,10 @@
       "open_menu": "Menüyü aç",
       "whatsapp_line": "Whatsapp Sipariş Hattı {{ phone }}",
       "favorites": "Favorilerim"
+    },
+    "footer": {
+      "secure_shopping": "İnternette Güvenli Alışveriş",
+      "copyright_html": "©{{ year }} {{ shop }} — Tüm Hakları Saklıdır."
     }
   },
   "search": {

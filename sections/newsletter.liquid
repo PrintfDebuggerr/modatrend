@@ -1,0 +1,100 @@
+{% comment %}
+  Newsletter signup band ("E-bülten Üyelik") shown above the footer.
+  Uses the standard customer form; subscribers are tagged "newsletter".
+{% endcomment %}
+
+<div class="newsletter full-width">
+  <div class="container newsletter__inner">
+    <h2 class="newsletter__title">{{ 'newsletter.title' | t }}</h2>
+    <p class="newsletter__subtext">{{ 'newsletter.subtext' | t }}</p>
+
+    {% form 'customer', class: 'newsletter__form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+
+      {%- if form.posted_successfully? -%}
+        <p class="newsletter__success" tabindex="-1" autofocus>{{ 'newsletter.success' | t }}</p>
+      {%- else -%}
+        {{ form.errors | default_errors }}
+        <div class="newsletter__row">
+          <input
+            type="email"
+            name="contact[email]"
+            value="{{ form.email }}"
+            required
+            autocomplete="email"
+            placeholder="{{ 'newsletter.placeholder' | t }}"
+            aria-label="{{ 'newsletter.placeholder' | t }}"
+          >
+          <button type="submit" class="button">{{ 'newsletter.submit' | t }}</button>
+        </div>
+      {%- endif -%}
+    {% endform %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .newsletter {
+    background-color: var(--color-surface);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .newsletter__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding-block: var(--space-xl);
+    text-align: center;
+  }
+
+  .newsletter__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .newsletter__subtext {
+    color: var(--color-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .newsletter__form {
+    width: min(44rem, 100%);
+    margin-top: var(--space-md);
+  }
+
+  .newsletter__row {
+    display: flex;
+  }
+
+  .newsletter__row input {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-border);
+    border-right: 0;
+    background-color: var(--color-background);
+    font-size: var(--font-size-sm);
+  }
+
+  .newsletter__row input:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+
+  .newsletter__row .button {
+    min-height: auto;
+    padding-block: var(--space-sm);
+  }
+
+  .newsletter__success {
+    color: var(--color-accent);
+    font-weight: var(--font-weight-bold);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.newsletter",
+  "settings": []
+}
+{% endschema %}

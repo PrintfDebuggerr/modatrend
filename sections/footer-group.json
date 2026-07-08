@@ -11,15 +11,61 @@
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    },
     "footer": {
       "type": "footer",
+      "blocks": {
+        "shopping": {
+          "type": "menu",
+          "settings": {
+            "heading": "Alışveriş Bilgileri",
+            "menu": ""
+          }
+        },
+        "customer-service": {
+          "type": "menu",
+          "settings": {
+            "heading": "Müşteri Hizmetleri",
+            "menu": ""
+          }
+        },
+        "corporate": {
+          "type": "menu",
+          "settings": {
+            "heading": "Kurumsal",
+            "menu": ""
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "heading": "Sosyal Medya"
+          }
+        },
+        "apps": {
+          "type": "apps",
+          "settings": {
+            "heading": "Mobil Uygulamalarımız"
+          }
+        }
+      },
+      "block_order": [
+        "shopping",
+        "customer-service",
+        "corporate",
+        "social",
+        "apps"
+      ],
       "settings": {
-        "menu": "",
         "show_payment_icons": true
       }
     }
   },
   "order": [
+    "newsletter",
     "footer"
   ]
 }

@@ -1,56 +1,448 @@
-<footer>
+{% comment %}
+  Modatrend footer.
+
+  Gray band with block-driven columns (menu columns, social icons, an
+  image column for e.g. the ETBIS badge, and mobile-app links), followed
+  by a white trust/payment strip, an SEO text area, and the copyright bar.
+
+  Menu columns collapse into accordions on mobile; a tiny script forces
+  them open on desktop.
+{% endcomment %}
+
+<footer class="footer full-width">
+  <div class="container footer__columns">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'menu' -%}
+          <details class="footer__col" data-footer-col {{ block.shopify_attributes }}>
+            <summary class="footer__heading">{{ block.settings.heading }}</summary>
+            <ul class="footer__list" role="list">
+              {%- for link in block.settings.menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </details>
+
+        {%- when 'social' -%}
+          <details class="footer__col" data-footer-col {{ block.shopify_attributes }}>
+            <summary class="footer__heading">{{ block.settings.heading }}</summary>
+            <ul class="footer__social" role="list">
+              {%- if block.settings.facebook != blank -%}
+                <li>
+                  <a href="{{ block.settings.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M13 22v-8h3l.5-4H13V7.5c0-1 .3-1.5 1.7-1.5H17V2.2C16.6 2.1 15.4 2 14.1 2 11.1 2 9 3.9 9 7.1V10H6v4h3v8z"></path></svg>
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if block.settings.twitter != blank -%}
+                <li>
+                  <a href="{{ block.settings.twitter }}" target="_blank" rel="noopener" aria-label="X">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.5 3h3l-7.1 8.1L21.5 21h-6.2l-4.4-5.6L5.8 21h-3l7.5-8.6L2.5 3h6.3l4 5.1zM16.4 19h1.7L7.9 4.9H6z"></path></svg>
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if block.settings.instagram != blank -%}
+                <li>
+                  <a href="{{ block.settings.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor" stroke="none"></circle></svg>
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if block.settings.tiktok != blank -%}
+                <li>
+                  <a href="{{ block.settings.tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.5 2h2.9c.2 1.9 1.3 3.5 3.1 4v3c-1.7 0-3.1-.6-4.1-1.4v6.9a6.3 6.3 0 1 1-6.3-6.3c.3 0 .7 0 1 .1v3.2a3.2 3.2 0 1 0 2.3 3V2z"></path></svg>
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if block.settings.pinterest != blank -%}
+                <li>
+                  <a href="{{ block.settings.pinterest }}" target="_blank" rel="noopener" aria-label="Pinterest">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 0 0-3.7 19.3c-.1-.8-.2-2 .1-2.9l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.5 1.9-2.5.9 0 1.3.7 1.3 1.5 0 .9-.6 2.2-.9 3.5-.2 1 .5 1.9 1.6 1.9 1.9 0 3.3-2 3.3-4.8 0-2.5-1.8-4.3-4.4-4.3a4.6 4.6 0 0 0-4.8 4.6c0 .9.4 1.9.8 2.4l-.3 1.2c-.1.4-.3.5-.6.3-1.2-.6-2-2.4-2-3.9 0-3.2 2.3-6.1 6.7-6.1 3.5 0 6.2 2.5 6.2 5.8 0 3.5-2.2 6.3-5.2 6.3-1 0-2-.5-2.3-1.1l-.6 2.4c-.2.9-.8 2-1.2 2.6A10 10 0 1 0 12 2z"></path></svg>
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if block.settings.youtube != blank -%}
+                <li>
+                  <a href="{{ block.settings.youtube }}" target="_blank" rel="noopener" aria-label="YouTube">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M23 12s0-3.3-.4-4.8a2.5 2.5 0 0 0-1.8-1.8C19.3 5 12 5 12 5s-7.3 0-8.8.4A2.5 2.5 0 0 0 1.4 7.2C1 8.7 1 12 1 12s0 3.3.4 4.8c.2.9.9 1.6 1.8 1.8 1.5.4 8.8.4 8.8.4s7.3 0 8.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.5.4-4.8.4-4.8zM9.8 15.3V8.7L15.9 12z"></path></svg>
+                  </a>
+                </li>
+              {%- endif -%}
+            </ul>
+          </details>
+
+        {%- when 'image' -%}
+          <details class="footer__col" data-footer-col {{ block.shopify_attributes }}>
+            <summary class="footer__heading">{{ block.settings.heading }}</summary>
+            <div class="footer__image">
+              {%- if block.settings.image -%}
+                {%- if block.settings.url != blank -%}
+                  <a href="{{ block.settings.url }}" target="_blank" rel="noopener">
+                    {{ block.settings.image | image_url: width: 200 | image_tag: alt: block.settings.caption }}
+                  </a>
+                {%- else -%}
+                  {{ block.settings.image | image_url: width: 200 | image_tag: alt: block.settings.caption }}
+                {%- endif -%}
+              {%- endif -%}
+              {%- if block.settings.caption != blank -%}
+                <p class="footer__caption">{{ block.settings.caption }}</p>
+              {%- endif -%}
+            </div>
+          </details>
+
+        {%- when 'apps' -%}
+          <details class="footer__col" data-footer-col {{ block.shopify_attributes }}>
+            <summary class="footer__heading">{{ block.settings.heading }}</summary>
+            <ul class="footer__list" role="list">
+              {%- if block.settings.app_store_url != blank -%}
+                <li>
+                  <a href="{{ block.settings.app_store_url }}" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.5 12.6c0-2 1.7-3 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.7 0-1.6-.7-2.7-.7-1.4 0-2.7.8-3.4 2-1.4 2.5-.4 6.2 1 8.2.7 1 1.5 2.1 2.6 2 1-.1 1.4-.7 2.6-.7s1.6.7 2.7.7c1.1 0 1.8-1 2.5-2 .8-1.2 1.1-2.3 1.1-2.4 0 0-2.2-.8-2.2-3.2zM15.3 6.1c.5-.7.9-1.6.8-2.6-.8 0-1.8.6-2.3 1.2-.5.6-1 1.6-.8 2.5.9.1 1.8-.4 2.3-1.1z"></path></svg>
+                    App Store
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if block.settings.google_play_url != blank -%}
+                <li>
+                  <a href="{{ block.settings.google_play_url }}" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M4 3.5v17c0 .4.5.7.8.4l9.9-8.5c.2-.2.2-.6 0-.8L4.8 3.1c-.3-.3-.8 0-.8.4zm12.2 6.1 2.8 2.4-2.8 2.4 2.9 1.7c.6.3.6 1.1 0 1.4l-1.6.9-3.7-3.2 3.7-3.2 1.6.9c.6.3.6 1.1 0 1.4z"></path></svg>
+                    Google Play
+                  </a>
+                </li>
+              {%- endif -%}
+            </ul>
+          </details>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.show_payment_icons -%}
+    <div class="footer__trust">
+      <div class="container footer__trust-inner">
+        <span class="footer__secure">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="1"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+          {{ 'sections.footer.secure_shopping' | t }}
+        </span>
+        <div class="footer__payment">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag }}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.seo_text != blank -%}
+    <div class="container footer__seo">
+      {{ section.settings.seo_text }}
+    </div>
+  {%- endif -%}
+
   <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
-
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
-
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+    <div class="container">
+      {%- assign current_year = 'now' | date: '%Y' -%}
+      {{ 'sections.footer.copyright_html' | t: year: current_year, shop: shop.name }}
+      {{ powered_by_link }}
+    </div>
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
+  .footer {
+    margin-top: var(--space-2xl);
+    background-color: var(--color-surface);
+    font-size: var(--font-size-sm);
+  }
+
+  .footer__columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-block: var(--space-lg);
+  }
+
+  @media (min-width: 750px) {
+    .footer__columns {
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+      gap: var(--space-lg);
+      padding-block: var(--space-xl);
+    }
+  }
+
+  .footer__heading {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    margin-top: 2rem;
+    padding-block: var(--space-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    list-style: none;
   }
-  footer a {
-    text-decoration: none;
-    color: var(--color-foreground);
+
+  .footer__heading::-webkit-details-marker {
+    display: none;
   }
-  footer .footer__links,
-  footer .footer__payment {
+
+  @media (max-width: 749px) {
+    .footer__col {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .footer__heading::after {
+      content: '+';
+      font-size: var(--font-size-md);
+    }
+
+    .footer__col[open] .footer__heading::after {
+      content: '−';
+    }
+  }
+
+  @media (min-width: 750px) {
+    .footer__heading {
+      pointer-events: none;
+      padding-block: 0 var(--space-sm);
+    }
+  }
+
+  .footer__list {
+    margin: 0;
+    padding: 0 0 var(--space-md);
+    list-style: none;
+  }
+
+  .footer__list li {
+    padding-block: var(--space-2xs);
+  }
+
+  .footer__list a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .footer__social {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin: 0;
+    padding: 0 0 var(--space-md);
+    list-style: none;
+  }
+
+  .footer__image {
+    padding-bottom: var(--space-md);
+  }
+
+  .footer__image img {
+    max-width: 10rem;
+    height: auto;
+  }
+
+  .footer__caption {
+    margin-top: var(--space-2xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+  }
+
+  .footer__trust {
+    background-color: var(--color-background);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .footer__trust-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding-block: var(--space-md);
+  }
+
+  .footer__secure {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-accent);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    font-size: var(--font-size-xs);
+  }
+
+  .footer__payment {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .footer__payment svg {
+    height: 2.4rem;
+    width: auto;
+  }
+
+  .footer__seo {
+    padding-block: var(--space-lg);
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+  }
+
+  .footer__copyright {
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding-block: var(--space-md);
+    text-align: center;
+    font-size: var(--font-size-xs);
+  }
+
+  .footer__copyright a {
+    color: var(--color-muted);
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const mq = window.matchMedia('(min-width: 750px)');
+
+    const sync = () => {
+      if (!mq.matches) return;
+      document.querySelectorAll('[data-footer-col]').forEach((col) => {
+        col.setAttribute('open', '');
+      });
+    };
+
+    mq.addEventListener('change', sync);
+    sync();
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
   "name": "t:general.footer",
-  "settings": [
+  "max_blocks": 6,
+  "blocks": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "menu",
+      "name": "t:general.menu_column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:labels.heading"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "t:labels.menu"
+        }
+      ]
     },
+    {
+      "type": "social",
+      "name": "t:general.social",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:labels.heading"
+        },
+        {
+          "type": "url",
+          "id": "facebook",
+          "label": "Facebook"
+        },
+        {
+          "type": "url",
+          "id": "twitter",
+          "label": "X (Twitter)"
+        },
+        {
+          "type": "url",
+          "id": "instagram",
+          "label": "Instagram"
+        },
+        {
+          "type": "url",
+          "id": "tiktok",
+          "label": "TikTok"
+        },
+        {
+          "type": "url",
+          "id": "pinterest",
+          "label": "Pinterest"
+        },
+        {
+          "type": "url",
+          "id": "youtube",
+          "label": "YouTube"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "t:general.image",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:labels.heading"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:labels.image"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:labels.link"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "t:labels.caption"
+        }
+      ]
+    },
+    {
+      "type": "apps",
+      "name": "t:general.mobile_apps",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:labels.heading"
+        },
+        {
+          "type": "url",
+          "id": "app_store_url",
+          "label": "App Store"
+        },
+        {
+          "type": "url",
+          "id": "google_play_url",
+          "label": "Google Play"
+        }
+      ]
+    }
+  ],
+  "settings": [
     {
       "type": "checkbox",
       "id": "show_payment_icons",
       "label": "t:labels.show_payment_icons",
       "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "seo_text",
+      "label": "t:labels.seo_text"
     }
   ]
 }

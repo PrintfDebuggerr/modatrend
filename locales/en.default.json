@@ -37,6 +37,13 @@
     "expires_on": "Expires on {{ expires_on }}",
     "use_at_checkout": "Use this gift card at checkout"
   },
+  "newsletter": {
+    "title": "Newsletter",
+    "subtext": "Sign up to hear about our latest news and campaigns!",
+    "placeholder": "Enter your email address...",
+    "submit": "Subscribe",
+    "success": "Thanks for subscribing!"
+  },
   "password": {
     "title": "This shop is private",
     "password": "Password",
@@ -64,6 +71,10 @@
       "open_menu": "Open menu",
       "whatsapp_line": "WhatsApp order line {{ phone }}",
       "favorites": "Favorites"
+    },
+    "footer": {
+      "secure_shopping": "Secure online shopping",
+      "copyright_html": "©{{ year }} {{ shop }} — All rights reserved."
     }
   },
   "search": {
