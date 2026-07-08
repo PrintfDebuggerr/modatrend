@@ -1,14 +1,15 @@
 {% doc %}
-  Renders product pricing in the Modatrend card style: centered magenta
-  sale price with the struck-through compare-at price beneath it, and an
-  optional rounded "extra discount" promo bar computed from the theme's
-  `extra_discount_percent` setting.
+  Renders product pricing in the Modatrend card style: a rounded magenta
+  percent-discount badge to the left of the sale price with the
+  struck-through compare-at price beneath it (matching the source site),
+  and an optional rounded "extra discount" promo bar computed from the
+  theme's `extra_discount_percent` setting.
 
-  The percent-discount badge is rendered by the product card as a media
-  overlay, not here. The extra-discount bar is display-only — pair it
-  with a matching automatic discount in the Shopify admin.
+  The extra-discount bar is display-only — pair it with a matching
+  automatic discount in the Shopify admin.
 
   @param {product} product - The product to render pricing for
+  @param {boolean} [show_badge] - Render the percent-discount badge (default: true)
   @param {boolean} [show_extra] - Render the extra-discount bar (default: true)
 
   @example
@@ -17,6 +18,7 @@
 {% enddoc %}
 
 {% liquid
+  assign show_badge = show_badge | default: true, allow_false: true
   assign show_extra = show_extra | default: true, allow_false: true
 
   assign variant = product.selected_or_first_available_variant
@@ -26,6 +28,7 @@
   assign on_sale = false
   if compare_at > price
     assign on_sale = true
+    assign discount_percent = compare_at | minus: price | times: 100 | divided_by: compare_at
   endif
 
   assign extra_percent = settings.extra_discount_percent | default: 0
@@ -36,17 +39,25 @@
 %}
 
 <div class="price{% if on_sale %} price--on-sale{% endif %}">
-  <div class="price__amounts">
-    <span class="price__current">
-      <span class="visually-hidden">{{ 'products.price.sale_price' | t }}</span>
-      {{ price | money }}
-    </span>
-    {%- if on_sale -%}
-      <s class="price__compare">
-        <span class="visually-hidden">{{ 'products.price.regular_price' | t }}</span>
-        {{ compare_at | money }}
-      </s>
+  <div class="price__main">
+    {%- if show_badge and on_sale -%}
+      <span class="price__badge" aria-hidden="true">
+        <strong>{{ 'products.price.badge_percent' | t: percent: discount_percent }}</strong>
+        <span>{{ 'products.price.discount_label' | t }}</span>
+      </span>
     {%- endif -%}
+    <span class="price__amounts">
+      <span class="price__current">
+        <span class="visually-hidden">{{ 'products.price.sale_price' | t }}</span>
+        {{ price | money }}
+      </span>
+      {%- if on_sale -%}
+        <s class="price__compare">
+          <span class="visually-hidden">{{ 'products.price.regular_price' | t }}</span>
+          {{ compare_at | money }}
+        </s>
+      {%- endif -%}
+    </span>
   </div>
   {%- if show_extra and extra_percent > 0 -%}
     <p class="price__extra">
@@ -62,11 +73,46 @@
     gap: var(--space-xs);
   }
 
+  .price__main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+  }
+
+  .price__badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 4.8rem;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: 0.8rem;
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+    line-height: 1.2;
+  }
+
+  .price__badge > strong {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .price__badge > span {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
   .price__amounts {
     display: flex;
     flex-direction: column;
     align-items: center;
     line-height: 1.2;
+  }
+
+  .price--on-sale .price__amounts {
+    align-items: flex-start;
   }
 
   .price__current {

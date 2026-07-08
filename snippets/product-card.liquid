@@ -21,13 +21,6 @@
   assign sku = product.selected_or_first_available_variant.sku
   assign model_code = product.metafields.custom.model_code | default: sku
 
-  assign card_price = product.selected_or_first_available_variant.price | default: product.price
-  assign card_compare = product.selected_or_first_available_variant.compare_at_price | default: product.compare_at_price
-  assign discount_percent = 0
-  if card_compare > card_price
-    assign discount_percent = card_compare | minus: card_price | times: 100 | divided_by: card_compare
-  endif
-
   assign show_sizes = false
   if show_quick_sizes and product.available
     unless product.has_only_default_variant
@@ -58,13 +51,6 @@
       <span class="product-card__ribbon">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M1 5h13v11H1zM14 8h4l3 3v5h-7zM6 19a2 2 0 1 0 0-.01M17.5 19a2 2 0 1 0 0-.01"></path></svg>
         {{ 'products.card.fast_shipping' | t }}
-      </span>
-    {%- endif -%}
-
-    {%- if discount_percent > 0 -%}
-      <span class="product-card__discount" aria-hidden="true">
-        <strong>{{ 'products.price.badge_percent' | t: percent: discount_percent }}</strong>
-        <span>{{ 'products.price.discount_label' | t }}</span>
       </span>
     {%- endif -%}
 
@@ -164,31 +150,6 @@
     font-weight: var(--font-weight-bold);
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  .product-card__discount {
-    position: absolute;
-    top: calc(var(--space-xs) + 3.2rem);
-    left: var(--space-xs);
-    z-index: 2;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    padding: var(--space-2xs) var(--space-xs);
-    border-radius: 0.4rem;
-    background-color: var(--color-accent);
-    color: var(--color-accent-contrast);
-    font-size: var(--font-size-xs);
-    line-height: 1.2;
-    text-transform: uppercase;
-  }
-
-  .product-card__discount strong {
-    font-size: var(--font-size-md);
-  }
-
-  .product-card__media:not(:has(.product-card__ribbon)) .product-card__discount {
-    top: var(--space-xs);
   }
 
   .product-card__code {
@@ -300,8 +261,10 @@
     text-align: center;
   }
 
+  /* Reserve two title lines so price rows and promo bars line up across cards. */
   .product-card__title {
     margin: 0;
+    min-height: calc(2em * var(--line-height-base));
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-normal);
     line-height: var(--line-height-base);
