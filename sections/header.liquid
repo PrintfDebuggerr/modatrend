@@ -195,7 +195,7 @@
               </ul>
               {%- if mega_image -%}
                 <a class="header__submenu-image" href="{{ link.url }}" tabindex="-1">
-                  {{ mega_image | image_url: width: 640 | image_tag: loading: 'lazy', alt: link.title }}
+                  {{ mega_image | image_url: width: 1400 | image_tag: widths: '700, 1000, 1400', loading: 'lazy', alt: link.title }}
                 </a>
               {%- endif -%}
             </div>
@@ -459,7 +459,7 @@
     list-style: none;
   }
 
-  .header__nav-item {
+  .header__nav {
     position: relative;
   }
 
@@ -479,16 +479,14 @@
     position: absolute;
     top: 100%;
     left: 0;
+    right: 0;
     z-index: 30;
     display: none;
+    min-height: 34rem;
     background-color: var(--color-background);
     border: 1px solid var(--color-border);
-    box-shadow: 0 8px 20px rgb(0 0 0 / 6%);
-  }
-
-  .header__submenu--mega {
-    left: 50%;
-    translate: -50% 0;
+    border-top: 0;
+    box-shadow: 0 14px 24px rgb(0 0 0 / 8%);
   }
 
   .header__nav-item:is(:hover, :focus-within) .header__submenu {
@@ -496,39 +494,38 @@
   }
 
   .header__submenu-list {
-    min-width: 22rem;
+    flex: 0 0 24rem;
     margin: 0;
-    padding: var(--space-sm) 0;
+    padding: var(--space-lg) 0;
     list-style: none;
+    background-color: var(--color-surface);
   }
 
   .header__submenu-list a {
     display: block;
-    padding: var(--space-xs) var(--space-md);
-    font-size: var(--font-size-sm);
-    white-space: nowrap;
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--font-size-base);
+    transition: background-color var(--transition-base), color var(--transition-base);
   }
 
   .header__submenu-list a:hover {
-    background-color: var(--color-surface);
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
   }
 
   .header__submenu-image {
-    display: none;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
   }
 
-  @media (min-width: 990px) {
-    .header__submenu-image {
-      display: block;
-      width: 32rem;
-      background-color: var(--color-surface);
-    }
-
-    .header__submenu-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  .header__submenu-image img {
+    max-width: 100%;
+    max-height: 28rem;
+    width: auto;
+    height: auto;
   }
 
   /* ---- Responsive ---- */
