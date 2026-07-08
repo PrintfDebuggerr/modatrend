@@ -198,6 +198,16 @@ h3 {
   font-size: var(--font-size-lg);
 }
 
+/** Breadcrumb (shared by collection and product pages) */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-block: var(--space-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
 /** Constrained content container (for use inside full-width children) */
 .container {
   width: min(

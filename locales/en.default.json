@@ -67,6 +67,19 @@
       "regular_price": "Regular price",
       "sale_price": "Sale price"
     },
+    "product": {
+      "sku_label": "SKU:",
+      "colors": "Colors",
+      "size_chart": "Size chart",
+      "select_variant": "Select an option",
+      "quantity": "Quantity",
+      "decrease_qty": "Decrease quantity",
+      "increase_qty": "Increase quantity",
+      "add_to_cart": "Add to cart",
+      "description_title": "Product details",
+      "related_title": "Similar products",
+      "view_image": "View image {{ index }}"
+    },
     "facets": {
       "filter_button": "Filter",
       "sort_by": "Sort by",

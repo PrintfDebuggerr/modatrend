@@ -1,0 +1,57 @@
+{% doc %}
+  Registers the shared favorites toggle behavior. Any element with
+  `data-favorite-button` and `data-product-handle` becomes a favorite
+  toggle; state persists to localStorage under `modatrend:favorites`.
+
+  Render once from any file whose markup contains favorite buttons —
+  the script is deduplicated per page.
+
+  @example
+  {% render 'favorites-toggle' %}
+{% enddoc %}
+
+{% javascript %}
+  (() => {
+    if (window.modatrendFavoritesReady) return;
+    window.modatrendFavoritesReady = true;
+
+    const KEY = 'modatrend:favorites';
+
+    const read = () => {
+      try {
+        return JSON.parse(localStorage.getItem(KEY)) || [];
+      } catch {
+        return [];
+      }
+    };
+
+    const sync = () => {
+      const list = read();
+      document.querySelectorAll('[data-favorite-button]').forEach((btn) => {
+        const active = list.includes(btn.dataset.productHandle);
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-favorite-button]');
+      if (!btn) return;
+
+      const handle = btn.dataset.productHandle;
+      let list = read();
+      const active = list.includes(handle);
+      list = active ? list.filter((h) => h !== handle) : [...list, handle];
+      localStorage.setItem(KEY, JSON.stringify(list));
+
+      btn.classList.toggle('is-active', !active);
+      btn.setAttribute('aria-pressed', String(!active));
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', sync);
+    } else {
+      sync();
+    }
+  })();
+{% endjavascript %}

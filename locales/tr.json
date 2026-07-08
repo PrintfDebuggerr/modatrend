@@ -67,6 +67,19 @@
       "regular_price": "Normal fiyat",
       "sale_price": "İndirimli fiyat"
     },
+    "product": {
+      "sku_label": "Stok Kodu:",
+      "colors": "Renkler",
+      "size_chart": "Ölçü Tablosu",
+      "select_variant": "Seçenek belirleyin",
+      "quantity": "Adet",
+      "decrease_qty": "Adet azalt",
+      "increase_qty": "Adet artır",
+      "add_to_cart": "Sepete Ekle",
+      "description_title": "Ürün Özellikleri",
+      "related_title": "Benzer Ürünler",
+      "view_image": "{{ index }}. görseli görüntüle"
+    },
     "facets": {
       "filter_button": "Filtreleme",
       "sort_by": "Sıralama",

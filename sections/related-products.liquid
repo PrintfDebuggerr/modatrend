@@ -1,0 +1,75 @@
+{% comment %}
+  "Benzer Ürünler" — related products rail under the PDP.
+  Shows products from the product's first collection in a horizontal
+  scroll-snap track (no JS).
+{% endcomment %}
+
+{%- assign related_collection = collection | default: product.collections.first -%}
+
+{%- if related_collection and related_collection.products_count > 1 -%}
+  <div class="related">
+    <h2 class="related__title">{{ 'products.product.related_title' | t }}</h2>
+    <ul class="related__track" role="list">
+      {%- assign shown = 0 -%}
+      {%- for related_product in related_collection.products limit: 13 -%}
+        {%- if related_product.id != product.id and shown < 12 -%}
+          {%- assign shown = shown | plus: 1 -%}
+          <li class="related__item">
+            {% render 'product-card', product: related_product, show_quick_sizes: false %}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .related {
+    margin-block: var(--space-2xl);
+  }
+
+  .related__title {
+    margin-bottom: var(--space-lg);
+    font-size: var(--font-size-lg);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .related__track {
+    display: flex;
+    gap: var(--space-sm);
+    margin: 0;
+    padding: 0 0 var(--space-sm);
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .related__item {
+    flex: 0 0 44%;
+    scroll-snap-align: start;
+  }
+
+  @media (min-width: 750px) {
+    .related__item {
+      flex-basis: 23%;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .related__item {
+      flex-basis: 18.5%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.related_products",
+  "settings": [],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
