@@ -179,13 +179,26 @@
             {{ link.title }}
           </a>
           {%- if link.links.size > 0 -%}
-            <ul class="header__submenu" role="list">
-              {%- for child in link.links -%}
-                <li>
-                  <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a>
-                </li>
-              {%- endfor -%}
-            </ul>
+            {%- liquid
+              assign mega_image = blank
+              if link.type == 'collection_link' and link.object
+                assign mega_image = link.object.featured_image | default: link.object.products.first.featured_image
+              endif
+            -%}
+            <div class="header__submenu{% if mega_image %} header__submenu--mega{% endif %}">
+              <ul class="header__submenu-list" role="list">
+                {%- for child in link.links -%}
+                  <li>
+                    <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+              {%- if mega_image -%}
+                <a class="header__submenu-image" href="{{ link.url }}" tabindex="-1">
+                  {{ mega_image | image_url: width: 640 | image_tag: loading: 'lazy', alt: link.title }}
+                </a>
+              {%- endif -%}
+            </div>
           {%- endif -%}
         </li>
       {%- endfor -%}
@@ -468,26 +481,54 @@
     left: 0;
     z-index: 30;
     display: none;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 6%);
+  }
+
+  .header__submenu--mega {
+    left: 50%;
+    translate: -50% 0;
+  }
+
+  .header__nav-item:is(:hover, :focus-within) .header__submenu {
+    display: flex;
+  }
+
+  .header__submenu-list {
     min-width: 22rem;
     margin: 0;
     padding: var(--space-sm) 0;
     list-style: none;
-    background-color: var(--color-background);
-    border: 1px solid var(--color-border);
   }
 
-  .header__nav-item:is(:hover, :focus-within) .header__submenu {
-    display: block;
-  }
-
-  .header__submenu a {
+  .header__submenu-list a {
     display: block;
     padding: var(--space-xs) var(--space-md);
     font-size: var(--font-size-sm);
+    white-space: nowrap;
   }
 
-  .header__submenu a:hover {
+  .header__submenu-list a:hover {
     background-color: var(--color-surface);
+  }
+
+  .header__submenu-image {
+    display: none;
+  }
+
+  @media (min-width: 990px) {
+    .header__submenu-image {
+      display: block;
+      width: 32rem;
+      background-color: var(--color-surface);
+    }
+
+    .header__submenu-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   /* ---- Responsive ---- */

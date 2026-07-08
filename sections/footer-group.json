@@ -22,21 +22,21 @@
           "type": "menu",
           "settings": {
             "heading": "Alışveriş Bilgileri",
-            "menu": ""
+            "menu": "footer-alisveris"
           }
         },
         "customer-service": {
           "type": "menu",
           "settings": {
             "heading": "Müşteri Hizmetleri",
-            "menu": ""
+            "menu": "footer-musteri-hizmetleri"
           }
         },
         "corporate": {
           "type": "menu",
           "settings": {
             "heading": "Kurumsal",
-            "menu": ""
+            "menu": "footer-kurumsal"
           }
         },
         "social": {
