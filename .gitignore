@@ -16,6 +16,10 @@ node_modules/
 .claude/
 .playwright-mcp/
 
+# Secrets — never commit
+.env
+.env.*
+
 ## Release files
 release
 *.zip

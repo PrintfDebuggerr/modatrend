@@ -20,7 +20,14 @@
     "checkout": "Checkout",
     "title": "Cart",
     "update": "Update",
-    "remove": "Remove"
+    "remove": "Remove",
+    "clear": "Clear cart",
+    "empty": "Your cart is empty.",
+    "summary": "Order summary",
+    "subtotal": "Subtotal",
+    "discounts": "Discounts",
+    "total": "Total",
+    "continue": "Continue shopping"
   },
   "customers": {
     "login": {

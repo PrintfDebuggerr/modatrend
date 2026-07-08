@@ -17,10 +17,17 @@
     "comment_form_title": "Yorum yap"
   },
   "cart": {
-    "checkout": "Sipariş tamamla",
+    "checkout": "Alışverişi Tamamla",
     "title": "Sepetim",
     "update": "Güncelle",
-    "remove": "Kaldır"
+    "remove": "Kaldır",
+    "clear": "Sepeti Temizle",
+    "empty": "Sepetiniz boş.",
+    "summary": "Sipariş Özeti",
+    "subtotal": "Ara Toplam",
+    "discounts": "İndirim",
+    "total": "Toplam Tutar",
+    "continue": "Alışverişe Devam Et"
   },
   "customers": {
     "login": {

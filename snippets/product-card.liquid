@@ -129,22 +129,35 @@
     position: absolute;
     top: var(--space-xs);
     left: 0;
+    z-index: 2;
+    max-width: 60%;
+    overflow: hidden;
     padding: var(--space-2xs) var(--space-sm);
     background-color: var(--color-ship-badge);
     color: var(--color-accent-contrast);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .product-card__code {
     position: absolute;
-    top: var(--space-xs);
+    top: calc(var(--space-xs) + 2.6rem);
     right: var(--space-xs);
+    max-width: 60%;
+    overflow: hidden;
     padding: var(--space-2xs) var(--space-xs);
     background-color: color-mix(in srgb, var(--color-muted) 80%, transparent);
     color: var(--color-accent-contrast);
     font-size: var(--font-size-xs);
     text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .product-card__media:not(:has(.product-card__ribbon)) .product-card__code {
+    top: var(--space-xs);
   }
 
   .product-card__favorite {
