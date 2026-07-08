@@ -9,12 +9,76 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
+    "hero": {
+      "type": "hero-slider",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Summer Collection 2026",
+            "heading": "Yeni Sezon",
+            "link": "shopify://collections/bayan-terlik",
+            "cta_label": "Alışverişe Başla"
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Summer 2026",
+            "heading": "Kadın Koleksiyonu",
+            "link": "shopify://collections/bayan-topuklu-ayakkabi",
+            "cta_label": "Alışverişe Başla"
+          }
+        }
+      },
+      "block_order": ["slide-1", "slide-2"],
+      "settings": {
+        "autoplay": true
+      }
+    },
+    "categories": {
+      "type": "category-promo-grid",
+      "blocks": {
+        "tile-1": {
+          "type": "tile",
+          "settings": {
+            "collection": "bayan-terlik",
+            "label": "Kadın Terlik"
+          }
+        },
+        "tile-2": {
+          "type": "tile",
+          "settings": {
+            "collection": "bayan-topuklu-ayakkabi",
+            "label": "Kadın Topuklu"
+          }
+        }
+      },
+      "block_order": ["tile-1", "tile-2"],
       "settings": {}
+    },
+    "featured-terlik": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "bayan-terlik",
+        "heading": "Yeni Ürünler",
+        "max_products": 8,
+        "show_view_all": true
+      }
+    },
+    "featured-topuklu": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "bayan-topuklu-ayakkabi",
+        "max_products": 8,
+        "show_view_all": true
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "categories",
+    "featured-terlik",
+    "featured-topuklu"
   ]
 }

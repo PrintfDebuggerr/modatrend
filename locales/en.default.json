@@ -5,7 +5,9 @@
     "back_to_shopping": "Back to shopping"
   },
   "general": {
-    "breadcrumb_home": "Home"
+    "breadcrumb_home": "Home",
+    "whatsapp_label": "Order via WhatsApp",
+    "whatsapp_message": "Hello, I would like to place an order."
   },
   "blog": {
     "article_comments": "Comments",
@@ -111,6 +113,14 @@
     "footer": {
       "secure_shopping": "Secure online shopping",
       "copyright_html": "©{{ year }} {{ shop }} — All rights reserved."
+    },
+    "hero": {
+      "previous": "Previous slide",
+      "next": "Next slide",
+      "go_to_slide": "Go to slide {{ index }}"
+    },
+    "featured": {
+      "view_all": "View all"
     }
   },
   "search": {

@@ -5,7 +5,9 @@
     "back_to_shopping": "Alışverişe geri dön"
   },
   "general": {
-    "breadcrumb_home": "Anasayfa"
+    "breadcrumb_home": "Anasayfa",
+    "whatsapp_label": "WhatsApp ile sipariş ver",
+    "whatsapp_message": "Merhaba, sipariş vermek istiyorum."
   },
   "blog": {
     "article_comments": "Yorumlar",
@@ -111,6 +113,14 @@
     "footer": {
       "secure_shopping": "İnternette Güvenli Alışveriş",
       "copyright_html": "©{{ year }} {{ shop }} — Tüm Hakları Saklıdır."
+    },
+    "hero": {
+      "previous": "Önceki görsel",
+      "next": "Sonraki görsel",
+      "go_to_slide": "{{ index }}. görsele git"
+    },
+    "featured": {
+      "view_all": "Tümünü Gör"
     }
   },
   "search": {

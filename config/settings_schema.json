@@ -58,6 +58,28 @@
     ]
   },
   {
+    "name": "t:general.whatsapp",
+    "settings": [
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "t:labels.whatsapp_number",
+        "info": "t:info.whatsapp_number"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_display",
+        "label": "t:labels.whatsapp_display"
+      },
+      {
+        "type": "checkbox",
+        "id": "whatsapp_fab",
+        "label": "t:labels.whatsapp_fab",
+        "default": true
+      }
+    ]
+  },
+  {
     "name": "t:general.promotions",
     "settings": [
       {

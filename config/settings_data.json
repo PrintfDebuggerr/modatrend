@@ -10,6 +10,9 @@
 {
   "current": {
     "type_primary_font": "quicksand_n4",
+    "whatsapp_number": "905538361665",
+    "whatsapp_display": "0553 836 16 65",
+    "whatsapp_fab": true,
     "extra_discount_percent": 10,
     "max_page_width": "78rem",
     "min_page_margin": 16,
