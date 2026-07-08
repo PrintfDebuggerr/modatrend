@@ -17,7 +17,15 @@
   assign whatsapp_number = section.settings.whatsapp_number
 -%}
 
+{%- liquid
+  assign show_utility = false
+  if utility_menu.links.size > 0 or whatsapp_number != blank or section.settings.favorites_url != blank
+    assign show_utility = true
+  endif
+-%}
+
 <header class="header full-width">
+  {%- if show_utility -%}
   <div class="header__utility">
     <div class="container header__utility-inner">
       {%- if utility_menu.links.size > 0 -%}
@@ -54,6 +62,7 @@
       </div>
     </div>
   </div>
+  {%- endif -%}
 
   <div class="container header__main">
     <div class="header__main-left">
@@ -465,7 +474,8 @@
 
   @media (min-width: 750px) {
     .header__drawer,
-    .header__search-link {
+    .header__search-link,
+    .header__main-left {
       display: none;
     }
 
