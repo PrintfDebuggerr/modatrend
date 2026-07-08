@@ -58,6 +58,14 @@
       "sale_price": "İndirimli fiyat"
     }
   },
+  "sections": {
+    "header": {
+      "menu": "Menü",
+      "open_menu": "Menüyü aç",
+      "whatsapp_line": "Whatsapp Sipariş Hattı {{ phone }}",
+      "favorites": "Favorilerim"
+    }
+  },
   "search": {
     "title": "Arama",
     "placeholder": "Aradığınız ürünü yazın...",

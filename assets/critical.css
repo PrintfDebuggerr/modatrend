@@ -198,6 +198,15 @@ h3 {
   font-size: var(--font-size-lg);
 }
 
+/** Constrained content container (for use inside full-width children) */
+.container {
+  width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+  margin-inline: auto;
+}
+
 /** Accessibility helper */
 .visually-hidden {
   position: absolute;

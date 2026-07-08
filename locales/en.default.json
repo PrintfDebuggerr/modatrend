@@ -58,6 +58,14 @@
       "sale_price": "Sale price"
     }
   },
+  "sections": {
+    "header": {
+      "menu": "Menu",
+      "open_menu": "Open menu",
+      "whatsapp_line": "WhatsApp order line {{ phone }}",
+      "favorites": "Favorites"
+    }
+  },
   "search": {
     "title": "Search",
     "placeholder": "Search articles, pages, or products",

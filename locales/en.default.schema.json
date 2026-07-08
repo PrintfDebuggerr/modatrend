@@ -40,7 +40,10 @@
     "background": "Background",
     "border": "Borders",
     "extra_discount_percent": "Extra discount percent",
+    "favorites_url": "Favorites link",
     "foreground": "Foreground",
+    "logo": "Logo image",
+    "logo_accent": "Logo accent text",
     "muted": "Muted text",
     "shipping_badge": "Shipping badge",
     "surface": "Surface",
@@ -55,10 +58,15 @@
     "page_width": "Page width",
     "show_payment_icons": "Show payment icons",
     "text_style": "Text style",
-    "text": "Text"
+    "text": "Text",
+    "utility_menu": "Utility menu",
+    "whatsapp_display": "WhatsApp display number",
+    "whatsapp_number": "WhatsApp number"
   },
   "info": {
-    "extra_discount_percent": "Display only. Create a matching automatic discount in the Shopify admin so the price applies at checkout. Set to 0 to hide."
+    "extra_discount_percent": "Display only. Create a matching automatic discount in the Shopify admin so the price applies at checkout. Set to 0 to hide.",
+    "logo_accent": "The part of the shop name to highlight in the accent color when no logo image is set.",
+    "whatsapp_number": "International format, digits only. Example: 905538361665"
   },
   "options": {
     "alignment": {
