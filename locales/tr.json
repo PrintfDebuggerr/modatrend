@@ -72,9 +72,9 @@
       "sold_out": "Tükendi"
     },
     "price": {
-      "badge_percent": "%{{ percent }}",
+      "badge_percent": "%%{{ percent }}",
       "discount_label": "İndirim",
-      "extra_discount_html": "Extra %{{ percent }} İndirim <strong>{{ price }}</strong>",
+      "extra_discount_html": "Extra %%{{ percent }} İndirim <strong>{{ price }}</strong>",
       "regular_price": "Normal fiyat",
       "sale_price": "İndirimli fiyat"
     },

@@ -117,7 +117,7 @@ const PRODUCTS = [
     tags: ['terlik'],
     image: `${IMG}/cift-tokali-kadin-terlik-bej-902-43.jpg`,
     price: '349.90',
-    compareAtPrice: null,
+    compareAtPrice: '459.90',
     skuBase: 'C215-BEJ',
     sizes: sizes(36, 40),
     soldOutSizes: [],
