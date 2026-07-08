@@ -9,7 +9,7 @@
   only when set — the source banners carry their own label.
 {% endcomment %}
 
-<div class="promo-grid promo-grid--cols-{{ section.settings.columns }}">
+<div class="promo-grid promo-grid--cols-{{ section.settings.columns }} full-width">
   {%- for block in section.blocks -%}
     {%- liquid
       assign tile_collection = block.settings.collection
@@ -56,13 +56,16 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-sm);
-    margin-block: var(--space-sm);
+    margin-block: var(--space-sm) 0;
+    width: calc(100% - var(--page-margin) * 2);
+    margin-inline: auto;
   }
 
   @media (min-width: 750px) {
     .promo-grid {
-      gap: var(--space-lg);
-      margin-block: var(--space-lg) 0;
+      gap: 3rem;
+      margin-block: 3rem 0;
+      width: min(162rem, calc(100% - var(--page-margin) * 2));
     }
 
     .promo-grid--cols-2 {
