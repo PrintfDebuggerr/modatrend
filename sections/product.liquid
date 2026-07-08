@@ -474,7 +474,9 @@
     gap: var(--space-2xs);
   }
 
+  /* Struck price lines up with the sale amount (badge width + row gap). */
   .pdp__price-compare {
+    padding-left: 6.8rem;
     font-size: var(--font-size-md);
     color: var(--color-muted);
   }
@@ -490,21 +492,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-width: 5.6rem;
+    min-height: 5.6rem;
     padding: var(--space-2xs) var(--space-xs);
-    border-radius: var(--style-border-radius-inputs);
+    border-radius: 1rem;
     background-color: var(--color-accent);
     color: var(--color-accent-contrast);
-    line-height: 1.1;
+    line-height: 1.2;
   }
 
   .pdp__price-badge > strong {
     font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-medium);
   }
 
   .pdp__price-badge > span {
-    font-size: var(--font-size-xs);
+    font-size: 1rem;
     text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   .pdp__price-current {
@@ -525,23 +530,26 @@
   .pdp__installments strong {
     display: block;
     font-size: var(--font-size-sm);
-    color: var(--color-foreground);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-muted);
   }
 
   .pdp__extra {
     display: inline-flex;
-    align-items: center;
-    gap: var(--space-2xs);
-    margin-top: var(--space-xs);
-    padding: var(--space-2xs) var(--space-sm);
-    border-radius: var(--style-border-radius-inputs);
+    align-items: baseline;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+    padding: 0.6rem var(--space-md);
+    border-radius: 0.6rem;
     background-color: var(--color-accent);
     color: var(--color-accent-contrast);
     font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
   }
 
   .pdp__extra strong {
     font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
   }
 
   /* ---- Side links (payment options, size chart) ---- */
