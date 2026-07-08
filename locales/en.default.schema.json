@@ -23,6 +23,7 @@
     "password": "Password",
     "primary": "Primary",
     "product": "Product",
+    "promotions": "Promotions",
     "row": "Row",
     "search": "Search",
     "secondary": "Secondary",
@@ -38,6 +39,7 @@
     "alignment": "Alignment",
     "background": "Background",
     "border": "Borders",
+    "extra_discount_percent": "Extra discount percent",
     "foreground": "Foreground",
     "muted": "Muted text",
     "shipping_badge": "Shipping badge",
@@ -54,6 +56,9 @@
     "show_payment_icons": "Show payment icons",
     "text_style": "Text style",
     "text": "Text"
+  },
+  "info": {
+    "extra_discount_percent": "Display only. Create a matching automatic discount in the Shopify admin so the price applies at checkout. Set to 0 to hide."
   },
   "options": {
     "alignment": {

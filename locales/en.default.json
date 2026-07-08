@@ -42,6 +42,22 @@
     "password": "Password",
     "enter": "Enter"
   },
+  "products": {
+    "card": {
+      "fast_shipping": "Ships in 24 hours",
+      "product_code": "SKU",
+      "add_to_favorites": "Add to favorites",
+      "quick_sizes": "Quick size selection",
+      "sold_out": "Sold out"
+    },
+    "price": {
+      "badge_percent": "{{ percent }}%",
+      "discount_label": "off",
+      "extra_discount_html": "Extra {{ percent }}% off <strong>{{ price }}</strong>",
+      "regular_price": "Regular price",
+      "sale_price": "Sale price"
+    }
+  },
   "search": {
     "title": "Search",
     "placeholder": "Search articles, pages, or products",

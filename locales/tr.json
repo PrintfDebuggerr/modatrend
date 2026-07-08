@@ -1,0 +1,68 @@
+{
+  "404": {
+    "title": "404",
+    "not_found": "Sayfa bulunamadı.",
+    "back_to_shopping": "Alışverişe geri dön"
+  },
+  "blog": {
+    "article_comments": "Yorumlar",
+    "article_metadata_html": "{{ date }} — {{ author }}",
+    "comment_form_body": "Yorum",
+    "comment_form_email": "E-posta",
+    "comment_form_name": "Ad",
+    "comment_form_submit": "Gönder",
+    "comment_form_title": "Yorum yap"
+  },
+  "cart": {
+    "checkout": "Sipariş tamamla",
+    "title": "Sepetim",
+    "update": "Güncelle",
+    "remove": "Kaldır"
+  },
+  "customers": {
+    "login": {
+      "email": "E-posta",
+      "password": "Şifre",
+      "submit": "Giriş yap",
+      "title": "Üye girişi"
+    }
+  },
+  "collections": {
+    "title": "Koleksiyonlar"
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Apple Wallet'a ekle",
+    "card": "Hediye kartı",
+    "expired": "Bu hediye kartının süresi doldu",
+    "expires_on": "Son kullanma tarihi: {{ expires_on }}",
+    "use_at_checkout": "Bu hediye kartını ödeme adımında kullanın"
+  },
+  "password": {
+    "title": "Bu mağaza özeldir",
+    "password": "Şifre",
+    "enter": "Giriş"
+  },
+  "products": {
+    "card": {
+      "fast_shipping": "24 Saatte Kargoda",
+      "product_code": "Ü-KODU",
+      "add_to_favorites": "Favorilere ekle",
+      "quick_sizes": "Hızlı numara seçimi",
+      "sold_out": "Tükendi"
+    },
+    "price": {
+      "badge_percent": "%{{ percent }}",
+      "discount_label": "İndirim",
+      "extra_discount_html": "Extra %{{ percent }} İndirim <strong>{{ price }}</strong>",
+      "regular_price": "Normal fiyat",
+      "sale_price": "İndirimli fiyat"
+    }
+  },
+  "search": {
+    "title": "Arama",
+    "placeholder": "Aradığınız ürünü yazın...",
+    "submit": "Ara",
+    "no_results_html": "{{ terms }} için sonuç bulunamadı",
+    "results_for_html": "{{ terms }} için {{ count }} sonuç bulundu"
+  }
+}

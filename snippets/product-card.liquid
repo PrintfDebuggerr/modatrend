@@ -1,0 +1,287 @@
+{% doc %}
+  Renders a Modatrend product card: flat/square media on a light surface,
+  fast-shipping ribbon, product-code pill, favorite toggle, quick size links
+  on hover (desktop), title and pricing.
+
+  Behavior notes:
+  - The fast-shipping ribbon shows when the product is tagged `24-saat-kargo`.
+  - Quick sizes render one link per variant (hidden for single-variant
+    products) and deep-link to the product page with the variant selected.
+  - Favorites persist to localStorage under `modatrend:favorites`.
+
+  @param {product} product - The product to render
+  @param {boolean} [show_quick_sizes] - Show hover quick-size links (default: true)
+
+  @example
+  {% render 'product-card', product: product %}
+{% enddoc %}
+
+{% liquid
+  assign show_quick_sizes = show_quick_sizes | default: true, allow_false: true
+  assign sku = product.selected_or_first_available_variant.sku
+
+  assign show_sizes = false
+  if show_quick_sizes and product.available
+    unless product.has_only_default_variant
+      assign show_sizes = true
+    endunless
+  endif
+%}
+
+<article class="product-card">
+  <div class="product-card__media">
+    <a href="{{ product.url }}" class="product-card__media-link" tabindex="-1" aria-hidden="true">
+      {%- if product.featured_image -%}
+        {{
+          product.featured_image
+          | image_url: width: 900
+          | image_tag:
+            widths: '300, 450, 600, 900',
+            sizes: '(min-width: 750px) 25vw, 50vw',
+            class: 'product-card__image',
+            loading: 'lazy'
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__image product-card__image--placeholder' }}
+      {%- endif -%}
+    </a>
+
+    {%- if product.tags contains '24-saat-kargo' -%}
+      <span class="product-card__ribbon">{{ 'products.card.fast_shipping' | t }}</span>
+    {%- endif -%}
+
+    {%- if sku != blank -%}
+      <span class="product-card__code">{{ 'products.card.product_code' | t }} {{ sku }}</span>
+    {%- endif -%}
+
+    <button
+      type="button"
+      class="product-card__favorite"
+      data-favorite-button
+      data-product-handle="{{ product.handle }}"
+      aria-label="{{ 'products.card.add_to_favorites' | t }}"
+      aria-pressed="false"
+    >
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"></path>
+      </svg>
+    </button>
+
+    {%- unless product.available -%}
+      <span class="product-card__soldout">{{ 'products.card.sold_out' | t }}</span>
+    {%- endunless -%}
+
+    {%- if show_sizes -%}
+      <ul class="product-card__sizes" aria-label="{{ 'products.card.quick_sizes' | t }}">
+        {%- for variant in product.variants limit: 8 -%}
+          <li>
+            {%- if variant.available -%}
+              <a class="product-card__size" href="{{ product.url }}?variant={{ variant.id }}">{{ variant.title }}</a>
+            {%- else -%}
+              <span class="product-card__size product-card__size--disabled" aria-disabled="true">{{ variant.title }}</span>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+
+  <div class="product-card__info">
+    <h3 class="product-card__title">
+      <a href="{{ product.url }}">{{ product.title }}</a>
+    </h3>
+    {% render 'price', product: product %}
+  </div>
+</article>
+
+{% stylesheet %}
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    border-radius: var(--card-radius);
+  }
+
+  .product-card__media {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-surface);
+  }
+
+  .product-card__media-link {
+    display: block;
+  }
+
+  .product-card__image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+  }
+
+  .product-card:hover .product-card__image {
+    transform: scale(1.03);
+  }
+
+  .product-card__ribbon {
+    position: absolute;
+    top: var(--space-xs);
+    left: 0;
+    padding: var(--space-2xs) var(--space-sm);
+    background-color: var(--color-ship-badge);
+    color: var(--color-accent-contrast);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .product-card__code {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    padding: var(--space-2xs) var(--space-xs);
+    background-color: color-mix(in srgb, var(--color-muted) 80%, transparent);
+    color: var(--color-accent-contrast);
+    font-size: var(--font-size-xs);
+    text-align: center;
+  }
+
+  .product-card__favorite {
+    position: absolute;
+    bottom: var(--space-xs);
+    right: var(--space-xs);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-accent);
+    cursor: pointer;
+  }
+
+  .product-card__favorite.is-active svg {
+    fill: currentcolor;
+  }
+
+  .product-card__soldout {
+    position: absolute;
+    bottom: var(--space-xs);
+    left: var(--space-xs);
+    padding: var(--space-2xs) var(--space-xs);
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+  }
+
+  .product-card__sizes {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: var(--space-xs);
+    list-style: none;
+    background-color: color-mix(in srgb, var(--color-background) 92%, transparent);
+  }
+
+  @media (hover: hover) and (min-width: 750px) {
+    .product-card:is(:hover, :focus-within) .product-card__sizes {
+      display: flex;
+    }
+  }
+
+  .product-card__size {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.6rem;
+    height: 3.6rem;
+    padding: 0 var(--space-2xs);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    font-size: var(--font-size-sm);
+    transition: border-color var(--transition-base);
+  }
+
+  a.product-card__size:hover {
+    border-color: var(--color-accent);
+    color: var(--color-foreground);
+  }
+
+  .product-card__size--disabled {
+    color: var(--color-muted);
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+
+  .product-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    text-align: center;
+  }
+
+  .product-card__title {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-base);
+  }
+
+  .product-card__title a {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const KEY = 'modatrend:favorites';
+
+    const read = () => {
+      try {
+        return JSON.parse(localStorage.getItem(KEY)) || [];
+      } catch {
+        return [];
+      }
+    };
+
+    const sync = () => {
+      const list = read();
+      document.querySelectorAll('[data-favorite-button]').forEach((btn) => {
+        const active = list.includes(btn.dataset.productHandle);
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-favorite-button]');
+      if (!btn) return;
+
+      const handle = btn.dataset.productHandle;
+      let list = read();
+      const active = list.includes(handle);
+      list = active ? list.filter((h) => h !== handle) : [...list, handle];
+      localStorage.setItem(KEY, JSON.stringify(list));
+
+      btn.classList.toggle('is-active', !active);
+      btn.setAttribute('aria-pressed', String(!active));
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', sync);
+    } else {
+      sync();
+    }
+  })();
+{% endjavascript %}

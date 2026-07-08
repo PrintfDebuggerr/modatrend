@@ -10,6 +10,7 @@
 {
   "current": {
     "type_primary_font": "quicksand_n4",
+    "extra_discount_percent": 10,
     "max_page_width": "78rem",
     "min_page_margin": 16,
     "background_color": "#FFFFFF",

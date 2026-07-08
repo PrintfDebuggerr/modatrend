@@ -58,6 +58,22 @@
     ]
   },
   {
+    "name": "t:general.promotions",
+    "settings": [
+      {
+        "type": "range",
+        "id": "extra_discount_percent",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "label": "t:labels.extra_discount_percent",
+        "info": "t:info.extra_discount_percent",
+        "default": 10
+      }
+    ]
+  },
+  {
     "name": "t:general.colors",
     "settings": [
       {

@@ -5,37 +5,55 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
 {% endcomment %}
 
-<h1>{{ collection.title }}</h1>
+<h1 class="collection-title">{{ collection.title }}</h1>
 
 <div class="collection-products">
-  {% paginate collection.products by 20 %}
-    {% for product in collection.products %}
-      <div class="collection-product">
-        {% if product.featured_image %}
-          {% render 'image',
-            class: 'collection-product__image',
-            image: product.featured_image,
-            url: product.url,
-            width: 400,
-            height: 400,
-            crop: 'center'
-          %}
-        {% endif %}
-        <div class="collection-product__content">
-          <p>{{ product.title | escape | link_to: product.url }}</p>
-          <p>{{ product.price | money }}</p>
-        </div>
-      </div>
-    {% endfor %}
+  {% paginate collection.products by 24 %}
+    <ul class="product-grid" role="list">
+      {% for product in collection.products %}
+        <li>
+          {% render 'product-card', product: product %}
+        </li>
+      {% endfor %}
+    </ul>
 
     {{ paginate | default_pagination }}
   {% endpaginate %}
 </div>
 
 {% stylesheet %}
-  .collection-products {
+  .collection-title {
+    margin-block: var(--space-lg);
+    font-size: var(--font-size-xl);
+  }
+
+  .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg) var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 750px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl) var(--space-lg);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .collection-products > .pagination,
+  .collection-products > span {
+    display: block;
+    margin-block: var(--space-xl);
+    text-align: center;
   }
 {% endstylesheet %}
 
