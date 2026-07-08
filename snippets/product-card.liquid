@@ -19,6 +19,14 @@
 {% liquid
   assign show_quick_sizes = show_quick_sizes | default: true, allow_false: true
   assign sku = product.selected_or_first_available_variant.sku
+  assign model_code = product.metafields.custom.model_code | default: sku
+
+  assign card_price = product.selected_or_first_available_variant.price | default: product.price
+  assign card_compare = product.selected_or_first_available_variant.compare_at_price | default: product.compare_at_price
+  assign discount_percent = 0
+  if card_compare > card_price
+    assign discount_percent = card_compare | minus: card_price | times: 100 | divided_by: card_compare
+  endif
 
   assign show_sizes = false
   if show_quick_sizes and product.available
@@ -47,11 +55,24 @@
     </a>
 
     {%- if product.tags contains '24-saat-kargo' -%}
-      <span class="product-card__ribbon">{{ 'products.card.fast_shipping' | t }}</span>
+      <span class="product-card__ribbon">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M1 5h13v11H1zM14 8h4l3 3v5h-7zM6 19a2 2 0 1 0 0-.01M17.5 19a2 2 0 1 0 0-.01"></path></svg>
+        {{ 'products.card.fast_shipping' | t }}
+      </span>
     {%- endif -%}
 
-    {%- if sku != blank -%}
-      <span class="product-card__code">{{ 'products.card.product_code' | t }} {{ sku }}</span>
+    {%- if discount_percent > 0 -%}
+      <span class="product-card__discount" aria-hidden="true">
+        <strong>{{ 'products.price.badge_percent' | t: percent: discount_percent }}</strong>
+        <span>{{ 'products.price.discount_label' | t }}</span>
+      </span>
+    {%- endif -%}
+
+    {%- if model_code != blank -%}
+      <span class="product-card__code">
+        <span>{{ 'products.card.product_code' | t }}</span>
+        <strong>{{ model_code }}</strong>
+      </span>
     {%- endif -%}
 
     <button
@@ -130,9 +151,13 @@
     top: var(--space-xs);
     left: 0;
     z-index: 2;
-    max-width: 60%;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    max-width: 70%;
     overflow: hidden;
     padding: var(--space-2xs) var(--space-sm);
+    border-radius: 0 999px 999px 0;
     background-color: var(--color-ship-badge);
     color: var(--color-accent-contrast);
     font-size: var(--font-size-xs);
@@ -141,23 +166,54 @@
     text-overflow: ellipsis;
   }
 
-  .product-card__code {
+  .product-card__discount {
     position: absolute;
-    top: calc(var(--space-xs) + 2.6rem);
-    right: var(--space-xs);
-    max-width: 60%;
-    overflow: hidden;
+    top: calc(var(--space-xs) + 3.2rem);
+    left: var(--space-xs);
+    z-index: 2;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
     padding: var(--space-2xs) var(--space-xs);
-    background-color: color-mix(in srgb, var(--color-muted) 80%, transparent);
+    border-radius: 0.4rem;
+    background-color: var(--color-accent);
     color: var(--color-accent-contrast);
     font-size: var(--font-size-xs);
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .product-card__discount strong {
+    font-size: var(--font-size-md);
+  }
+
+  .product-card__media:not(:has(.product-card__ribbon)) .product-card__discount {
+    top: var(--space-xs);
+  }
+
+  .product-card__code {
+    position: absolute;
+    top: var(--space-xs);
+    right: var(--space-xs);
+    z-index: 2;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 45%;
+    overflow: hidden;
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: 0.8rem;
+    background-color: color-mix(in srgb, var(--color-muted) 75%, transparent);
+    color: var(--color-accent-contrast);
+    font-size: var(--font-size-xs);
+    line-height: 1.25;
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .product-card__media:not(:has(.product-card__ribbon)) .product-card__code {
-    top: var(--space-xs);
+  .product-card__media:has(.product-card__ribbon) .product-card__code {
+    top: calc(var(--space-xs) + 0.2rem);
   }
 
   .product-card__favorite {
