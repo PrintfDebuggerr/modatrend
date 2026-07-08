@@ -4,6 +4,9 @@
     "not_found": "Page not found.",
     "back_to_shopping": "Back to shopping"
   },
+  "general": {
+    "breadcrumb_home": "Home"
+  },
   "blog": {
     "article_comments": "Comments",
     "article_metadata_html": "{{ date }} by {{ author }}",
@@ -63,6 +66,19 @@
       "extra_discount_html": "Extra {{ percent }}% off <strong>{{ price }}</strong>",
       "regular_price": "Regular price",
       "sale_price": "Sale price"
+    },
+    "facets": {
+      "filter_button": "Filter",
+      "sort_by": "Sort by",
+      "clear_all": "Clear all",
+      "apply": "Apply",
+      "product_count": "{{ count }} products",
+      "price_from": "From",
+      "price_to": "To",
+      "display": "Display:",
+      "grid_3": "3 columns",
+      "grid_4": "4 columns",
+      "empty": "No products found."
     }
   },
   "sections": {

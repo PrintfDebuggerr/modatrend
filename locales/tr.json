@@ -4,6 +4,9 @@
     "not_found": "Sayfa bulunamadı.",
     "back_to_shopping": "Alışverişe geri dön"
   },
+  "general": {
+    "breadcrumb_home": "Anasayfa"
+  },
   "blog": {
     "article_comments": "Yorumlar",
     "article_metadata_html": "{{ date }} — {{ author }}",
@@ -63,6 +66,19 @@
       "extra_discount_html": "Extra %{{ percent }} İndirim <strong>{{ price }}</strong>",
       "regular_price": "Normal fiyat",
       "sale_price": "İndirimli fiyat"
+    },
+    "facets": {
+      "filter_button": "Filtreleme",
+      "sort_by": "Sıralama",
+      "clear_all": "Filtreleri temizle",
+      "apply": "Uygula",
+      "product_count": "{{ count }} Ürün listeleniyor",
+      "price_from": "En az",
+      "price_to": "En çok",
+      "display": "Gösterim:",
+      "grid_3": "3 sütun",
+      "grid_4": "4 sütun",
+      "empty": "Ürün bulunamadı."
     }
   },
   "sections": {

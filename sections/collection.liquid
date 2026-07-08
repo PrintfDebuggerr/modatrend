@@ -1,19 +1,160 @@
 {% comment %}
-  This section is used in the collection template to render collection page
-  listing all products within a collection.
+  Collection page: breadcrumb, native storefront filtering (facets) with
+  dropdown panels on desktop and a collapsible FILTRELEME panel on mobile,
+  sort select, product count, grid density toggle, product grid and
+  pagination.
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+  Filters come from the Shopify admin (Search & Discovery). Changing any
+  facet control submits the form (full page reload, no heavy JS).
 {% endcomment %}
+
+<nav class="breadcrumb" aria-label="breadcrumb">
+  <a href="{{ routes.root_url }}">{{ 'general.breadcrumb_home' | t }}</a>
+  <span aria-hidden="true">›</span>
+  <span aria-current="page">{{ collection.title }}</span>
+</nav>
 
 <h1 class="collection-title">{{ collection.title }}</h1>
 
+<form class="facets" action="{{ collection.url }}" method="get" data-facets-form>
+  {%- if collection.filters.size > 0 -%}
+    <details class="facets__wrapper" data-facets-wrapper>
+      <summary class="facets__toggle">
+        {{ 'products.facets.filter_button' | t }}
+        {%- assign active_count = 0 -%}
+        {%- for filter in collection.filters -%}
+          {%- assign active_count = active_count | plus: filter.active_values.size -%}
+        {%- endfor -%}
+        {%- if active_count > 0 -%}
+          <span class="facets__count">{{ active_count }}</span>
+        {%- endif -%}
+      </summary>
+
+      <div class="facets__panel">
+        {%- for filter in collection.filters -%}
+          {%- case filter.type -%}
+            {%- when 'list' -%}
+              <details class="facet">
+                <summary class="facet__label">
+                  {{ filter.label }}
+                  {%- if filter.active_values.size > 0 -%}
+                    <span class="facets__count">{{ filter.active_values.size }}</span>
+                  {%- endif -%}
+                  <svg class="facet__chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+                </summary>
+                <ul class="facet__values" role="list">
+                  {%- for value in filter.values -%}
+                    <li>
+                      <label class="facet__value{% if value.count == 0 and value.active == false %} facet__value--disabled{% endif %}">
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value }}"
+                          {% if value.active %}checked{% endif %}
+                          {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                        >
+                        <span>{{ value.label }}</span>
+                        <small>({{ value.count }})</small>
+                      </label>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+
+            {%- when 'price_range' -%}
+              <details class="facet">
+                <summary class="facet__label">
+                  {{ filter.label }}
+                  <svg class="facet__chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+                </summary>
+                <div class="facet__price">
+                  <input
+                    type="number"
+                    name="{{ filter.min_value.param_name }}"
+                    {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                    min="0"
+                    placeholder="{{ 'products.facets.price_from' | t }}"
+                    aria-label="{{ 'products.facets.price_from' | t }}"
+                  >
+                  <span aria-hidden="true">—</span>
+                  <input
+                    type="number"
+                    name="{{ filter.max_value.param_name }}"
+                    {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %}
+                    min="0"
+                    placeholder="{{ 'products.facets.price_to' | t }}"
+                    aria-label="{{ 'products.facets.price_to' | t }}"
+                  >
+                  <button type="submit" class="button facet__apply">{{ 'products.facets.apply' | t }}</button>
+                </div>
+              </details>
+          {%- endcase -%}
+        {%- endfor -%}
+
+        {%- if active_count > 0 -%}
+          <a class="facets__clear" href="{{ collection.url }}">{{ 'products.facets.clear_all' | t }}</a>
+        {%- endif -%}
+      </div>
+    </details>
+  {%- endif -%}
+
+  <label class="facets__sort">
+    <span class="visually-hidden">{{ 'products.facets.sort_by' | t }}</span>
+    <select name="sort_by" data-facets-sort>
+      {%- for option in collection.sort_options -%}
+        <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+          {{ option.name }}
+        </option>
+      {%- endfor -%}
+    </select>
+  </label>
+</form>
+
+{%- assign has_active = false -%}
+{%- for filter in collection.filters -%}
+  {%- if filter.active_values.size > 0 -%}
+    {%- assign has_active = true -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if has_active -%}
+  <ul class="active-facets" role="list">
+    {%- for filter in collection.filters -%}
+      {%- for value in filter.active_values -%}
+        <li>
+          <a class="active-facets__chip" href="{{ value.url_to_remove }}">
+            {{ filter.label }}: {{ value.label }}
+            <span aria-hidden="true">✕</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+<div class="collection-toolbar">
+  <p class="collection-toolbar__count">
+    {{ 'products.facets.product_count' | t: count: collection.products_count }}
+  </p>
+  <div class="collection-toolbar__density">
+    <span class="collection-toolbar__density-label">{{ 'products.facets.display' | t }}</span>
+    <button type="button" data-grid-cols="3" aria-pressed="true" aria-label="{{ 'products.facets.grid_3' | t }}">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><rect x="3" y="3" width="8" height="8"></rect><rect x="13" y="3" width="8" height="8"></rect><rect x="3" y="13" width="8" height="8"></rect><rect x="13" y="13" width="8" height="8"></rect></svg>
+    </button>
+    <button type="button" data-grid-cols="4" aria-pressed="false" aria-label="{{ 'products.facets.grid_4' | t }}">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><rect x="2" y="2" width="5.5" height="5.5"></rect><rect x="9.25" y="2" width="5.5" height="5.5"></rect><rect x="16.5" y="2" width="5.5" height="5.5"></rect><rect x="2" y="9.25" width="5.5" height="5.5"></rect><rect x="9.25" y="9.25" width="5.5" height="5.5"></rect><rect x="16.5" y="9.25" width="5.5" height="5.5"></rect><rect x="2" y="16.5" width="5.5" height="5.5"></rect><rect x="9.25" y="16.5" width="5.5" height="5.5"></rect><rect x="16.5" y="16.5" width="5.5" height="5.5"></rect></svg>
+    </button>
+  </div>
+</div>
+
 <div class="collection-products">
   {% paginate collection.products by 24 %}
-    <ul class="product-grid" role="list">
+    <ul class="product-grid" data-product-grid role="list">
       {% for product in collection.products %}
         <li>
           {% render 'product-card', product: product %}
         </li>
+      {% else %}
+        <li class="collection-empty">{{ 'products.facets.empty' | t }}</li>
       {% endfor %}
     </ul>
 
@@ -22,11 +163,287 @@
 </div>
 
 {% stylesheet %}
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-block: var(--space-md);
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+  }
+
   .collection-title {
-    margin-block: var(--space-lg);
+    margin-block: 0 var(--space-md);
     font-size: var(--font-size-xl);
   }
 
+  /* ---- Facets ---- */
+  .facets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background-color: var(--color-surface);
+  }
+
+  .facets__wrapper {
+    flex: 1 1 100%;
+  }
+
+  .facets__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .facets__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .facets__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.8rem;
+    height: 1.8rem;
+    padding: 0 0.4rem;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+    font-size: 1.1rem;
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+  }
+
+  .facets__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding-top: var(--space-sm);
+  }
+
+  .facet {
+    position: relative;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+  }
+
+  .facet__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .facet__label::-webkit-details-marker {
+    display: none;
+  }
+
+  .facet[open] .facet__chevron {
+    transform: rotate(180deg);
+  }
+
+  .facet__values {
+    margin: 0;
+    padding: var(--space-xs) var(--space-md) var(--space-sm);
+    list-style: none;
+    max-height: 26rem;
+    overflow-y: auto;
+  }
+
+  .facet__value {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding-block: var(--space-2xs);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+
+  .facet__value input {
+    accent-color: var(--color-accent);
+  }
+
+  .facet__value small {
+    color: var(--color-muted);
+  }
+
+  .facet__value--disabled {
+    color: var(--color-muted);
+    cursor: not-allowed;
+  }
+
+  .facet__price {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-md) var(--space-sm);
+  }
+
+  .facet__price input {
+    width: 9rem;
+    padding: var(--space-xs);
+    border: 1px solid var(--color-border);
+    font-size: var(--font-size-sm);
+  }
+
+  .facet__apply {
+    min-height: auto;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+
+  .facets__clear {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .facets__sort {
+    flex: 1 1 100%;
+  }
+
+  .facets__sort select {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  @media (min-width: 750px) {
+    .facets {
+      padding: var(--space-md);
+    }
+
+    .facets__wrapper {
+      flex: 1 1 auto;
+    }
+
+    .facets__toggle {
+      display: none;
+    }
+
+    .facets__panel {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 0;
+    }
+
+    .facet {
+      min-width: 18rem;
+    }
+
+    .facet__values,
+    .facet__price {
+      position: absolute;
+      top: calc(100% + 1px);
+      left: -1px;
+      right: -1px;
+      z-index: 20;
+      background-color: var(--color-background);
+      border: 1px solid var(--color-border);
+      box-shadow: 0 6px 16px rgb(0 0 0 / 8%);
+    }
+
+    .facet__price {
+      min-width: 30rem;
+    }
+
+    .facets__sort {
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+
+    .facets__sort select {
+      width: auto;
+      min-width: 20rem;
+    }
+  }
+
+  /* ---- Active filter chips ---- */
+  .active-facets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin: var(--space-sm) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .active-facets__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-2xs) var(--space-sm);
+    background-color: var(--color-background);
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    font-size: var(--font-size-xs);
+  }
+
+  /* ---- Toolbar ---- */
+  .collection-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-block: var(--space-md);
+  }
+
+  .collection-toolbar__count {
+    font-size: var(--font-size-sm);
+  }
+
+  .collection-toolbar__density {
+    display: none;
+  }
+
+  @media (min-width: 750px) {
+    .collection-toolbar__density {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--font-size-xs);
+      color: var(--color-muted);
+    }
+
+    .collection-toolbar__density button {
+      display: inline-flex;
+      padding: var(--space-2xs);
+      border: 0;
+      background: transparent;
+      color: var(--color-muted);
+      cursor: pointer;
+    }
+
+    .collection-toolbar__density button[aria-pressed='true'] {
+      color: var(--color-accent);
+    }
+  }
+
+  /* ---- Grid ---- */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -41,12 +458,17 @@
       grid-template-columns: repeat(3, 1fr);
       gap: var(--space-xl) var(--space-lg);
     }
-  }
 
-  @media (min-width: 1100px) {
-    .product-grid {
+    .product-grid--dense {
       grid-template-columns: repeat(4, 1fr);
     }
+  }
+
+  .collection-empty {
+    grid-column: 1 / -1;
+    padding-block: var(--space-2xl);
+    text-align: center;
+    color: var(--color-muted);
   }
 
   .collection-products > .pagination,
@@ -56,6 +478,58 @@
     text-align: center;
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const form = document.querySelector('[data-facets-form]');
+    if (form) {
+      form.addEventListener('change', (event) => {
+        if (event.target.matches('input[type="checkbox"], select[data-facets-sort], [data-facets-sort]')) {
+          form.submit();
+        }
+      });
+
+      const wrapper = form.querySelector('[data-facets-wrapper]');
+      if (wrapper) {
+        const mq = window.matchMedia('(min-width: 750px)');
+        const syncWrapper = () => {
+          if (mq.matches) wrapper.setAttribute('open', '');
+        };
+        mq.addEventListener('change', syncWrapper);
+        syncWrapper();
+
+        document.addEventListener('click', (event) => {
+          if (!mq.matches) return;
+          form.querySelectorAll('.facet[open]').forEach((facet) => {
+            if (!facet.contains(event.target)) facet.removeAttribute('open');
+          });
+        });
+      }
+    }
+
+    const grid = document.querySelector('[data-product-grid]');
+    const buttons = document.querySelectorAll('[data-grid-cols]');
+    if (grid && buttons.length) {
+      const KEY = 'modatrend:grid-cols';
+
+      const apply = (cols) => {
+        grid.classList.toggle('product-grid--dense', cols === '4');
+        buttons.forEach((btn) => {
+          btn.setAttribute('aria-pressed', String(btn.dataset.gridCols === cols));
+        });
+      };
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          localStorage.setItem(KEY, btn.dataset.gridCols);
+          apply(btn.dataset.gridCols);
+        });
+      });
+
+      apply(localStorage.getItem(KEY) || '3');
+    }
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
