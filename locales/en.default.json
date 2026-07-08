@@ -6,6 +6,7 @@
   },
   "general": {
     "breadcrumb_home": "Home",
+    "close": "Close",
     "whatsapp_label": "Order via WhatsApp",
     "whatsapp_message": "Hello, I would like to place an order."
   },
@@ -29,7 +30,8 @@
     "subtotal": "Subtotal",
     "discounts": "Discounts",
     "total": "Total",
-    "continue": "Continue shopping"
+    "continue": "Continue shopping",
+    "item_count_label": "Total items"
   },
   "customers": {
     "login": {

@@ -6,6 +6,7 @@
   },
   "general": {
     "breadcrumb_home": "Anasayfa",
+    "close": "Kapat",
     "whatsapp_label": "WhatsApp ile sipariş ver",
     "whatsapp_message": "Merhaba, sipariş vermek istiyorum."
   },
@@ -29,7 +30,8 @@
     "subtotal": "Ara Toplam",
     "discounts": "İndirim",
     "total": "Toplam Tutar",
-    "continue": "Alışverişe Devam Et"
+    "continue": "Alışverişe Devam Et",
+    "item_count_label": "Toplam Ürün Adedi"
   },
   "customers": {
     "login": {

@@ -153,7 +153,7 @@
         </shopify-account>
       {%- endif -%}
 
-      <a class="header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'cart.title' | t }}">
+      <a class="header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'cart.title' | t }}" data-cart-open>
         {{ 'icon-cart.svg' | inline_asset_content }}
         {%- if cart.item_count > 0 -%}
           <span class="header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>
