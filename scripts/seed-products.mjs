@@ -180,6 +180,14 @@ async function upsertProduct(p) {
     productType: p.productType,
     status: 'ACTIVE',
     tags: p.tags,
+    metafields: [
+      {
+        namespace: 'custom',
+        key: 'model_code',
+        type: 'single_line_text_field',
+        value: p.skuBase.split('-')[0],
+      },
+    ],
     ...(existingId ? {} : { files: [{ originalSource: p.image, contentType: 'IMAGE' }] }),
     productOptions: [
       { name: 'Numara', position: 1, values: p.sizes.map((s) => ({ name: s })) },

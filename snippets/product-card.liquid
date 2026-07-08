@@ -212,8 +212,9 @@
     text-overflow: ellipsis;
   }
 
+  /* Drop below the shipping ribbon's row so the two never overlap. */
   .product-card__media:has(.product-card__ribbon) .product-card__code {
-    top: calc(var(--space-xs) + 0.2rem);
+    top: calc(var(--space-xs) + 3.2rem);
   }
 
   .product-card__favorite {
