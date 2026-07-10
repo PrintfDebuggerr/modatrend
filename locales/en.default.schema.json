@@ -51,6 +51,7 @@
   "labels": {
     "accent": "Accent",
     "alignment": "Alignment",
+    "alt": "Image alt text",
     "autoplay": "Auto-rotate slides",
     "background": "Background",
     "border": "Borders",
@@ -121,6 +122,6 @@
       "title": "Title",
       "subtitle": "Subtitle",
       "normal": "Normal text"
-    },
+    }
   }
 }

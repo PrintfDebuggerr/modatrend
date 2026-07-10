@@ -91,6 +91,10 @@
       "increase_qty": "Increase quantity",
       "add_to_cart": "Add to cart",
       "description_title": "Product details",
+      "reviews_title": "Reviews",
+      "no_reviews": "There are no reviews for this product yet.",
+      "suggestions_title": "Product suggestions",
+      "no_suggestions": "There are no suggestions for this product yet.",
       "related_title": "Similar products",
       "view_image": "View image {{ index }}"
     },

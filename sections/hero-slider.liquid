@@ -4,14 +4,22 @@
   "ALIŞVERİŞE BAŞLA" style CTA. Scroll-snap track with arrows and dots;
   optional autoplay.
 
-  Each slide is a block. If no image is set the slide renders the pastel
-  gradient background so the section looks right before assets exist.
+  Each slide is a block. Image priority: uploaded image, then external
+  image URL (used to mirror the source's Ticimax 1920x800 banners during
+  development). If neither is set the slide renders the pastel gradient
+  background so the section looks right before assets exist.
 {% endcomment %}
 
 <div class="hero full-width" data-hero{% if section.settings.autoplay %} data-hero-autoplay{% endif %}>
   <div class="hero__track" data-hero-track>
     {%- for block in section.blocks -%}
       <div class="hero__slide" data-hero-slide {{ block.shopify_attributes }}>
+        {%- liquid
+          assign slide_loading = 'lazy'
+          if forloop.first
+            assign slide_loading = 'eager'
+          endif
+        -%}
         {%- if block.settings.image -%}
           {{
             block.settings.image
@@ -20,8 +28,19 @@
               widths: '800, 1200, 1600, 2400',
               sizes: '100vw',
               class: 'hero__image',
-              loading: 'lazy'
+              loading: slide_loading,
+              alt: block.settings.alt
           }}
+        {%- elsif block.settings.image_url != blank -%}
+          <img
+            class="hero__image"
+            src="{{ block.settings.image_url }}"
+            alt="{{ block.settings.alt | escape }}"
+            width="1920"
+            height="800"
+            loading="{{ slide_loading }}"
+            {% if forloop.first %}fetchpriority="high"{% endif %}
+          >
         {%- endif -%}
 
         <div class="hero__content container">
@@ -37,7 +56,7 @@
         </div>
 
         {%- if block.settings.link != blank and block.settings.cta_label == blank -%}
-          <a class="hero__slide-link" href="{{ block.settings.link }}" aria-label="{{ block.settings.heading | default: block.settings.eyebrow | escape }}"></a>
+          <a class="hero__slide-link" href="{{ block.settings.link }}" aria-label="{{ block.settings.heading | default: block.settings.eyebrow | default: block.settings.alt | escape }}"></a>
         {%- endif -%}
       </div>
     {%- endfor -%}
@@ -86,14 +105,15 @@
     align-items: center;
     flex: 0 0 100%;
     scroll-snap-align: start;
-    aspect-ratio: 2 / 1;
+    aspect-ratio: 12 / 5;
     overflow: hidden;
     background: linear-gradient(105deg, #fdf6d8 0%, #fbe3cf 45%, #f6cdb4 100%);
   }
 
-  @media (min-width: 750px) {
+  /* Taller, larger hero on mobile (matches source proportions) */
+  @media (max-width: 749px) {
     .hero__slide {
-      aspect-ratio: 12 / 5;
+      aspect-ratio: 4 / 5;
     }
   }
 
@@ -239,10 +259,10 @@
       }, { passive: true });
 
       if (hero.hasAttribute('data-hero-autoplay')) {
-        let timer = setInterval(() => goTo((index() + 1) % slides.length), 5000);
+        let timer = setInterval(() => goTo((index() + 1) % slides.length), 5500);
         hero.addEventListener('pointerenter', () => clearInterval(timer));
         hero.addEventListener('pointerleave', () => {
-          timer = setInterval(() => goTo((index() + 1) % slides.length), 5000);
+          timer = setInterval(() => goTo((index() + 1) % slides.length), 5500);
         });
       }
     });
@@ -269,6 +289,17 @@
           "type": "image_picker",
           "id": "image",
           "label": "t:labels.image"
+        },
+        {
+          "type": "text",
+          "id": "image_url",
+          "label": "t:labels.image_url",
+          "info": "t:info.image_url"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "t:labels.alt"
         },
         {
           "type": "text",

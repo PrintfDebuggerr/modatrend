@@ -2,6 +2,7 @@
  * ------------------------------------------------------------
  * IMPORTANT: The contents of this file are auto-generated.
  *
+ *
  * This file may be updated by the Shopify admin theme editor
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
@@ -12,26 +13,54 @@
     "hero": {
       "type": "hero-slider",
       "blocks": {
-        "slide-1": {
+        "slide-indirim": {
           "type": "slide",
           "settings": {
-            "eyebrow": "Summer Collection 2026",
-            "heading": "Yeni Sezon",
-            "link": "shopify://collections/bayan-terlik",
-            "cta_label": "Alışverişe Başla"
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/indirimli-ayakkabi-modelleri-31f5.jpg",
+            "alt": "İndirimli Ayakkabı Modelleri",
+            "link": "shopify://collections/all"
           }
         },
-        "slide-2": {
+        "slide-yeni-urunler": {
           "type": "slide",
           "settings": {
-            "eyebrow": "Summer 2026",
-            "heading": "Kadın Koleksiyonu",
-            "link": "shopify://collections/bayan-topuklu-ayakkabi",
-            "cta_label": "Alışverişe Başla"
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/kadin-ayakkabi-modelleri-ve-fiyatlari-86ca.gif",
+            "alt": "Kadın Ayakkabı Modelleri ve Fiyatları",
+            "link": "shopify://collections/yeni-urunler"
+          }
+        },
+        "slide-kadin": {
+          "type": "slide",
+          "settings": {
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/kadin-ayakkabi-modelleri-ve-fiyatlari-f3ea.jpg",
+            "alt": "Kadın Ayakkabı Modelleri ve Fiyatları",
+            "link": "shopify://collections/bayan-terlik"
+          }
+        },
+        "slide-erkek": {
+          "type": "slide",
+          "settings": {
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/erkek-ayakkabi-modelleri-8c0e.jpg",
+            "alt": "Erkek Ayakkabı Modelleri",
+            "link": "shopify://collections/erkek-ayakkabi-modelleri"
+          }
+        },
+        "slide-cocuk": {
+          "type": "slide",
+          "settings": {
+            "image_url": "https://static.ticimax.cloud/12157/uploads/sayfatasarim/sayfa33/cocuk-ayakkabi-modelleri-1bfb.jpg",
+            "alt": "Çocuk Ayakkabı Modelleri",
+            "link": "shopify://collections/cocuk-ayakkabi-modelleri"
           }
         }
       },
-      "block_order": ["slide-1", "slide-2"],
+      "block_order": [
+        "slide-indirim",
+        "slide-yeni-urunler",
+        "slide-kadin",
+        "slide-erkek",
+        "slide-cocuk"
+      ],
       "settings": {
         "autoplay": true
       }

@@ -97,6 +97,13 @@
         </div>
       {%- endfor -%}
 
+      {%- if on_sale -%}
+        <span class="pdp__discount-badge" aria-hidden="true">
+          <strong>{{ 'products.price.badge_percent' | t: percent: discount_percent }}</strong>
+          <span>{{ 'products.price.discount_label' | t }}</span>
+        </span>
+      {%- endif -%}
+
       {%- if model_code != blank -%}
         <span class="pdp__code">
           <span>{{ 'products.card.product_code' | t }}</span>
@@ -188,7 +195,7 @@
       </div>
     {%- endif -%}
 
-    {% form 'product', product, class: 'pdp__form' %}
+    {% form 'product', product, id: 'PdpProductForm', class: 'pdp__form' %}
       {%- if product.has_only_default_variant -%}
         <input type="hidden" name="id" value="{{ current_variant.id }}">
       {%- elsif product.options.size == 1 -%}
@@ -276,7 +283,7 @@
       {%- if product.description != blank -%}
         <details class="pdp__accordion" open>
           <summary>{{ 'products.product.description_title' | t }}</summary>
-          <div class="pdp__accordion-content">{{ product.description }}</div>
+          <div class="pdp__accordion-content pdp__accordion-content--scroll">{{ product.description }}</div>
         </details>
       {%- endif -%}
 
@@ -288,9 +295,67 @@
           </details>
         {%- endif -%}
       {%- endfor -%}
+
+      {%- comment -%} Reviews row (matches source layout) {%- endcomment -%}
+      {%- assign review_count = product.metafields.reviews.rating_count.value | default: 0 -%}
+      <details class="pdp__accordion">
+        <summary>{{ 'products.product.reviews_title' | t }} ({{ review_count }})</summary>
+        <div class="pdp__accordion-content">
+          <p class="pdp__empty-note">{{ 'products.product.no_reviews' | t }}</p>
+        </div>
+      </details>
+
+      {%- comment -%} Product suggestions row {%- endcomment -%}
+      <details class="pdp__accordion">
+        <summary>{{ 'products.product.suggestions_title' | t }}</summary>
+        <div class="pdp__accordion-content">
+          {%- assign shown = 0 -%}
+          {%- if crumb_collection and crumb_collection.products.size > 0 -%}
+            <div class="pdp__suggests">
+              {%- for item in crumb_collection.products limit: 10 -%}
+                {%- if item.id != product.id and shown < 6 -%}
+                  {%- assign shown = shown | plus: 1 -%}
+                  <a class="pdp__suggest" href="{{ item.url }}">
+                    <span class="pdp__suggest-media">
+                      {{ item.featured_image | image_url: width: 220 | image_tag: loading: 'lazy', alt: item.title }}
+                    </span>
+                    <span class="pdp__suggest-title">{{ item.title }}</span>
+                    <span class="pdp__suggest-price">{{ item.price | money }}</span>
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- if shown == 0 -%}
+            <p class="pdp__empty-note">{{ 'products.product.no_suggestions' | t }}</p>
+          {%- endif -%}
+        </div>
+      </details>
     </div>
   </div>
 </div>
+
+<div class="pdp__sticky" data-pdp-sticky>
+  <div class="pdp__sticky-price{% if on_sale %} pdp__sticky-price--on-sale{% endif %}">
+    {%- if on_sale -%}
+      <s>{{ compare_at | money }}</s>
+    {%- endif -%}
+    <span class="pdp__sticky-current">{{ price | money }}</span>
+  </div>
+  <button
+    type="submit"
+    form="PdpProductForm"
+    class="button pdp__sticky-add"
+    {% unless product.available %}disabled{% endunless %}
+  >
+    {%- if product.available -%}
+      {{ 'products.product.add_to_cart' | t }}
+    {%- else -%}
+      {{ 'products.card.sold_out' | t }}
+    {%- endif -%}
+  </button>
+</div>
+<div class="pdp__sticky-spacer" aria-hidden="true"></div>
 
 {% render 'favorites-toggle' %}
 
@@ -374,6 +439,42 @@
   .pdp__image {
     width: 100%;
     height: auto;
+  }
+
+  /* Discount badge over the gallery (top-left), like the source — mobile only */
+  .pdp__discount-badge {
+    display: none;
+  }
+
+  @media (max-width: 749px) {
+    .pdp__discount-badge {
+      position: absolute;
+      top: var(--space-sm);
+      left: var(--space-sm);
+      z-index: 3;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 5rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: 0.8rem;
+      background-color: var(--color-accent);
+      color: var(--color-accent-contrast);
+      line-height: 1.15;
+      text-align: center;
+    }
+
+    .pdp__discount-badge strong {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+    }
+
+    .pdp__discount-badge span {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
   }
 
   .pdp__code {
@@ -519,6 +620,18 @@
 
   .pdp__price--on-sale .pdp__price-current {
     color: var(--color-accent);
+  }
+
+  /* Mobile: discount % is shown on the image badge, so drop the inline
+     price badge and remove the compare-price indent it reserved. */
+  @media (max-width: 749px) {
+    .pdp__price-badge {
+      display: none;
+    }
+
+    .pdp__price-compare {
+      padding-left: 0;
+    }
   }
 
   .pdp__installments {
@@ -791,6 +904,166 @@
     padding-bottom: var(--space-md);
     font-size: var(--font-size-sm);
     color: var(--color-foreground);
+  }
+
+  /* Scrollable "Ürün Özellikleri" panel — matches source (fixed height + scrollbar) */
+  .pdp__accordion-content--scroll {
+    max-height: 22rem;
+    overflow-y: auto;
+    padding-right: var(--space-sm);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-foreground) var(--color-surface);
+  }
+
+  .pdp__accordion-content--scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .pdp__accordion-content--scroll::-webkit-scrollbar-track {
+    background: var(--color-surface);
+  }
+
+  .pdp__accordion-content--scroll::-webkit-scrollbar-thumb {
+    background: var(--color-foreground);
+  }
+
+  /* Description bullets (materials, sole, origin…) */
+  .pdp__accordion-content ul {
+    margin: 0 0 var(--space-sm);
+    padding-left: 1.2em;
+    color: var(--color-muted);
+  }
+
+  .pdp__accordion-content li {
+    margin-bottom: 0.25em;
+  }
+
+  .pdp__accordion-content p {
+    margin-bottom: var(--space-sm);
+  }
+
+  /* Striped spec table (Renk / Materyal / Topuk Boyu / Topuk Tipi) */
+  .pdp__accordion-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--space-sm);
+  }
+
+  .pdp__accordion-content td {
+    padding: 0.7rem 1rem;
+    font-size: var(--font-size-sm);
+    vertical-align: top;
+  }
+
+  .pdp__accordion-content tr:nth-child(odd) td {
+    background: var(--color-surface);
+  }
+
+  .pdp__accordion-content td:first-child {
+    width: 40%;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-foreground);
+  }
+
+  .pdp__empty-note {
+    margin: 0;
+    color: var(--color-muted);
+  }
+
+  /* Suggestions row */
+  .pdp__suggests {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    padding-bottom: var(--space-2xs);
+    scrollbar-width: thin;
+  }
+
+  .pdp__suggest {
+    flex: 0 0 9.5rem;
+    color: var(--color-foreground);
+  }
+
+  .pdp__suggest-media {
+    display: block;
+    background: var(--color-surface);
+  }
+
+  .pdp__suggest-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .pdp__suggest-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: var(--space-2xs);
+    font-size: var(--font-size-xs);
+    line-height: 1.3;
+  }
+
+  .pdp__suggest-price {
+    display: block;
+    margin-top: var(--space-3xs, 2px);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+  }
+
+  /* Sticky add-to-cart bar (mobile only), like the source site */
+  .pdp__sticky,
+  .pdp__sticky-spacer {
+    display: none;
+  }
+
+  @media (max-width: 749px) {
+    .pdp__sticky {
+      position: fixed;
+      inset-inline: 0;
+      bottom: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--color-background);
+      border-top: 1px solid var(--color-border);
+      box-shadow: 0 -4px 14px rgb(0 0 0 / 10%);
+    }
+
+    .pdp__sticky-price {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .pdp__sticky-price s {
+      font-size: var(--font-size-xs);
+      color: var(--color-muted);
+    }
+
+    .pdp__sticky-current {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+    }
+
+    .pdp__sticky-price--on-sale .pdp__sticky-current {
+      color: var(--color-accent);
+    }
+
+    .pdp__sticky-add {
+      flex: 1;
+      letter-spacing: 0.04em;
+    }
+
+    /* Reserve space so the fixed bar never hides page content/footer. */
+    .pdp__sticky-spacer {
+      display: block;
+      height: 6.4rem;
+    }
   }
 {% endstylesheet %}
 

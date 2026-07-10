@@ -96,12 +96,33 @@
         </div>
       </details>
 
-      <a class="header__search-link" href="{{ routes.search_url }}" aria-label="{{ 'search.title' | t }}">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m20 20-3.8-3.8"></path>
-        </svg>
-      </a>
+      <details class="header__msearch" data-msearch>
+        <summary class="header__search-link" aria-label="{{ 'search.title' | t }}">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.8-3.8"></path>
+          </svg>
+        </summary>
+
+        <div class="header__msearch-panel">
+          <form class="header__msearch-form" action="{{ routes.search_url }}" method="get" role="search">
+            <input
+              type="search"
+              name="q"
+              value="{{ search.terms | escape }}"
+              placeholder="{{ 'search.placeholder' | t }}"
+              aria-label="{{ 'search.title' | t }}"
+              data-msearch-input
+            >
+            <button type="submit" aria-label="{{ 'search.submit' | t }}">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-3.8-3.8"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </details>
     </div>
 
     <a class="header__logo" href="{{ routes.root_url }}">
@@ -249,6 +270,7 @@
 
   /* ---- Main bar ---- */
   .header__main {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
@@ -260,6 +282,61 @@
     display: flex;
     align-items: center;
     gap: var(--space-md);
+  }
+
+  /* ---- Mobile expandable search ---- */
+  .header__msearch > summary {
+    display: inline-flex;
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .header__msearch > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .header__msearch-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+    background-color: var(--color-background);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 10px 16px rgb(0 0 0 / 8%);
+  }
+
+  .header__msearch-form {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .header__msearch-form input {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-sm) var(--space-md);
+    border: 0;
+    background: transparent;
+    font-size: var(--font-size-sm);
+  }
+
+  .header__msearch-form input:focus-visible {
+    outline: none;
+  }
+
+  .header__msearch-form button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--space-md);
+    border: 0;
+    background: transparent;
+    color: var(--color-accent);
+    cursor: pointer;
   }
 
   .header__logo {
@@ -415,8 +492,10 @@
     justify-content: space-between;
     padding: var(--space-sm) 0;
     font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    color: var(--color-foreground);
     cursor: pointer;
   }
 
@@ -443,6 +522,7 @@
     display: block;
     padding: var(--space-xs) 0;
     font-size: var(--font-size-sm);
+    color: var(--color-muted);
   }
 
   /* ---- Desktop nav ---- */
@@ -555,8 +635,7 @@
     .header__search {
       display: flex;
       width: 100%;
-      max-width: 46rem;
-      margin-inline: auto;
+      margin-inline: 0;
       background-color: var(--color-surface);
     }
 
@@ -601,6 +680,22 @@
 {% endstylesheet %}
 
 {% javascript %}
+  (() => {
+    const msearch = document.querySelector('[data-msearch]');
+    if (msearch) {
+      const input = msearch.querySelector('[data-msearch-input]');
+      msearch.addEventListener('toggle', () => {
+        if (msearch.open && input) input.focus();
+      });
+      document.addEventListener('click', (event) => {
+        if (msearch.open && !msearch.contains(event.target)) msearch.removeAttribute('open');
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && msearch.open) msearch.removeAttribute('open');
+      });
+    }
+  })();
+
   (() => {
     const drawer = document.querySelector('[data-header-drawer]');
     if (!drawer) return;

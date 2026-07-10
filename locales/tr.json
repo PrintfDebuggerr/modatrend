@@ -91,6 +91,10 @@
       "increase_qty": "Adet artır",
       "add_to_cart": "Sepete Ekle",
       "description_title": "Ürün Özellikleri",
+      "reviews_title": "Yorumlar",
+      "no_reviews": "Bu ürün için henüz yorum yapılmamış.",
+      "suggestions_title": "Ürün Önerileri",
+      "no_suggestions": "Bu ürün için henüz öneri bulunmuyor.",
       "related_title": "Benzer Ürünler",
       "view_image": "{{ index }}. görseli görüntüle"
     },
