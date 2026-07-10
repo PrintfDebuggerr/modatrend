@@ -163,6 +163,11 @@ body {
 /** Base typography */
 html {
   font-size: 62.5%;
+  /* Horizontal-scroll guard belongs on the root: viewport scrolling is
+     driven by <html>, so clipping here (not just on body) removes the
+     blank strip revealed by a right swipe on mobile. */
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
