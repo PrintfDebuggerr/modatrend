@@ -11,6 +11,10 @@ body {
   flex-direction: column;
   margin: 0;
   min-height: 100svh;
+  /* Guard against any element that slightly exceeds the viewport width so
+     mobile never reveals a blank strip on horizontal swipe. `clip` (unlike
+     `hidden`) does not break the sticky header or inner scroll rails. */
+  overflow-x: clip;
 }
 
 html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {

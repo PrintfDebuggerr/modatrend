@@ -116,9 +116,12 @@
 {% stylesheet %}
   .cart-drawer {
     position: fixed;
+    /* top:0 + bottom:0 sizes the drawer to the actual visible viewport.
+       More reliable than 100vh/100dvh in iOS in-app browsers, where the
+       checkout button could otherwise fall below the screen. */
     inset: 0 0 0 auto;
     width: min(40rem, 92vw);
-    height: 100dvh;
+    height: auto;
     max-width: none;
     max-height: none;
     margin: 0;
@@ -177,6 +180,7 @@
 
   .cart-drawer__items {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     margin: 0;
     padding: 0 var(--space-md);
@@ -265,6 +269,7 @@
 
   .cart-drawer__footer {
     padding: var(--space-md);
+    padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
     border-top: 1px solid var(--color-border);
   }
 
